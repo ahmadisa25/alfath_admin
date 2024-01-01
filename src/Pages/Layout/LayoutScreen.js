@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Outlet } from "react-router-dom";
 import Sidenav from '../../Components/Sidenav';
 import Topbar from '../../Components/Topbar';
-import Footer from '../../Components/Footer';
 import {Helmet} from "react-helmet";
 
 const { $ } = window;
