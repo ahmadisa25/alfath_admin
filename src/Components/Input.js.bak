@@ -1,0 +1,68 @@
+import { React, Component } from 'react';
+import { useForm } from 'react-hook-form';
+import CurrencyInput from 'react-currency-input-field';
+import { NumberFormat } from './NumberFormat';
+
+const MInput = (props) => {
+
+    const {
+        name,
+        label,
+        type,
+        placeholder,
+        role,
+        readOnly,
+        icon,
+        onClick,
+        value,
+        defaultValue,
+        register,
+        required,
+        isnumber,
+        onChange
+    } = props;
+
+    const onDataClick = () => {
+        if (onClick) {
+            onClick();
+        }
+    }
+    const onEditableChange = (e) => {
+        if(onChange){ onChange(e) }
+    }
+
+    return (
+        <div >
+            <label>{label}{readOnly}</label>
+            <div className="input-group input-group-joined">
+                {icon &&
+                    <span className={`input-group-text ${props.readOnly ? 'readonly' : ''}`}>
+                        {icon}
+                    </span>
+                }
+                { isnumber !== "true" ?
+                <input className="form-control ps-0"
+                    {...register}
+                    {...props}
+                    onClick={onDataClick}
+                />
+                :
+                <CurrencyInput
+                    // id="nominal_payment"
+                    // name="nominal_payment-name"
+                    {...props}
+                    className='form-control'
+                    decimalSeparator="," 
+                    groupSeparator="."
+                    // defaultValue={row.nominal_payment}
+                    decimalsLimit={2}
+                    style={{ textAlign: 'right' }}
+                    onValueChange={onEditableChange}
+                    />
+                }
+            </div>
+        </div>
+    )
+
+}
+export default MInput;

@@ -1,0 +1,115 @@
+/*modified from a code made by Mary Gathoni*/
+.sidenavparent{
+    width:"60px";
+}
+.sidenavparent:hover{
+    width:"15vw";
+}
+.sidenavHover {
+    width: 15vw;
+    transition: width 0.3s ease-in-out;
+    height: 100vh;
+    background-color: rgb(10,25,41);
+    padding-top: 28px;  
+    position: "fixed"; 
+    z-index: 1; 
+    top: 0;
+    left: 0;
+}
+
+.sidenav {
+    /*transition: width 0.3s ease-in-out;*/
+    height: 100vh;
+    background-color: rgb(10,25,41);
+    padding-top: 28px;  
+    position: "fixed"; 
+    z-index: 1; 
+    top: 0;
+    left: 0;
+    width: 60px;
+}
+
+.sideitem {
+    display: flex;
+    align-items: center;
+    padding: 8px 20px;
+    cursor: pointer;
+    color: #B2BAC2;
+    text-decoration: none;
+}
+
+
+.hideMenuSide {
+    display: flex;
+    align-items: center;
+    padding: 8px 20px 8px 17px;
+    cursor: pointer;
+    color: #B2BAC2;
+    text-decoration: none;
+}
+
+.sideitem:hover{
+    padding: 8px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color:white;
+    font-weight:700;
+    background: #FAA819;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+    border-top-left-radius:8px;
+    border-bottom-left-radius:8px;
+}
+
+.sideitemChild{
+    transition: height 0.3s, opacity 0.5s ease-in-out;
+    composes:sideitem;
+    margin-top: 0.5em;
+    margin-left: 1.5em;
+    opacity: 1;
+    display:block;
+}
+
+.sideitemChild:hover{
+    transition: height 0.3s, opacity 0.5s ease-in-out;
+    margin-top: 0.5em;
+    margin-left: 1.5em;
+    opacity: 1;
+    font-weight:700;
+    background: #FAA819;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+    border-top-left-radius:8px;
+    border-bottom-left-radius:8px;
+}
+
+.sideitemChildClosed{
+    display:none;
+    composes:sideitem;
+    margin-top:0;
+    opacity: 0;
+    height: 0;
+}
+.linkText{
+    padding-left: 16px;
+    opacity: 1;
+    display:block;
+}
+
+.linkTextHidden{
+    padding-left: 16px;
+    opacity: 0;
+    display:none;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.menuBtn {
+    align-self: center;
+    align-self: flex-start; 
+    justify-self: flex-end;
+    color: #B2BAC2;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding-left: 20px;
+}

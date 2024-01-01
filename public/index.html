@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon-32x32.png" />
+    <Helmet>
+      <title>Modena Servicedesk</title>
+      <meta name="theme-color" content="#000000" />
+      <meta
+        name="description"
+        content="Web site created using create-react-app"
+      />
+      <!-- <meta name="viewport" content="width=device-width, initial-scale=1" /> -->
+    </Helmet>
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link href="%PUBLIC_URL%/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="%PUBLIC_URL%/dist/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="%PUBLIC_URL%/dist/css/more.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/dist/css/saga-theme.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/dist/css/primereact.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/primeflex@2.0.0/primeflex.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link href="/path/to/material-icons/iconfont/material-icons.css" rel="stylesheet">
+    
+  </head>
+
+  <body id="page-top">
+
+    <!-- Page Wrapper -->
+        <div id="root" style="display: contents;"></div>
+
+    <!-- Scroll to Top Button-->
+    <a className="scroll-to-top rounded" href="#page-top">
+        <i className="fas fa-angle-up"></i>
+    </a>
+
+    <script src="%PUBLIC_URL%/vendor/jquery/jquery.min.js"></script>
+    <script src="%PUBLIC_URL%/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="%PUBLIC_URL%/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="%PUBLIC_URL%/dist/js/sb-admin-2.min.js"></script>
+    <script src="%PUBLIC_URL%/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="%PUBLIC_URL%/dist/js/demo/chart-area-demo.js"></script>
+    <script src="%PUBLIC_URL%/dist/js/demo/chart-pie-demo.js"></script>
+
+    <script>
+      var modal_lv = 0 ;
+      $('body').on('shown.bs.modal', function(e) {
+          if ( modal_lv > 0 )
+          {
+              $('.modal-backdrop:last').css('zIndex',1050+modal_lv) ;
+              $(e.target).css('zIndex',1051+modal_lv) ;
+          }
+          modal_lv++ ;
+      }).on('hidden.bs.modal', function() {
+          if ( modal_lv > 0 )
+              modal_lv-- ;
+      });
+
+      $('.count').prop('disabled', true);
+      $(document).on('click','.plus',function(){
+        $('.count').val(parseInt($('.count').val()) + 1 );
+      });
+      $(document).on('click','.minus',function(){
+        $('.count').val(parseInt($('.count').val()) - 1 );
+          if ($('.count').val() == 0) {
+          $('.count').val(1);
+        }
+      });
+    </script>
+
+</body>
+
+</html>

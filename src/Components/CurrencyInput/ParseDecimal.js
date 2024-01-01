@@ -1,0 +1,1 @@
+export const ParseDecimal = (value) => parseFloat(parseFloat(value).toFixed(2));

@@ -1,0 +1,41 @@
+#stepsExplainList{
+    display: inline-block;
+    margin: 0 18px;
+}
+
+#stepsDotsList{
+    display: inline-block;
+    font-size: 20px;
+    margin: 0 40px;
+    position: relative;
+    width:40px;
+    height:40px;
+    border-radius:250px;
+    border: 2px solid #cecece;
+    text-align:center;
+    background: linear-gradient(79.88deg, #32AE1E 19.62%, #1E8D91 70.68%);
+    color:white;
+    padding-top:2px;
+  }
+  
+  #stepsDotsList:nth-child(1)::after{
+    content: "";
+    background-color: #DADADA;
+    height: 5px;
+    width:120px;
+    display:block;
+    position: absolute;
+    z-index:-1;
+    bottom:15px;
+  }
+  
+  #stepsDotsList:nth-child(2)::after{
+    content: "";
+    background-color: #DADADA;
+    height: 5px;
+    width:120px;
+    display:block;
+    position: absolute;
+    z-index:-1;
+    bottom:15px;
+  }
