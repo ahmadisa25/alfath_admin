@@ -4,7 +4,6 @@ import {
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import MTable from '../../../Components/MTable/MTable';
-import {deleteSLA, getAllSLAs} from '../../../Service/SLAService';
 import Swal from 'sweetalert2';
 import { InputSwitch } from 'primereact/inputswitch';
 import Overlay from '../../../Components/Overlay';
@@ -14,11 +13,10 @@ import {BsTrashFill} from 'react-icons/bs';
 import ActionButton from '../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
 import { permissionCheck } from '../../../Utils/Utils';
-import { data_update_dark } from '../../../Images';
 
 
 const { $ } = window;   
-const SLASettings = () => {
+const UserSettings = () => {
     let { userInfo } = useSelector(state => state.auth);
     moment.locale('id');
     const [modal_state, setModalState] = useState("add");
@@ -26,13 +24,13 @@ const SLASettings = () => {
     const tableAgent = useRef();
     const [state, setState] = useState({ processing : false });
 
-    const editSLA = (sla_id) => {
-        navigate(`/sla-form/${sla_id}`)
+    const editAgent = (agent_id) => {
+        navigate(`/agent-form/${agent_id}`)
     }
 
     const onAddData = () => {
         //$('#modal-document').modal();
-        navigate('/sla-form');
+        navigate('/agent-form');
     }
 
     useEffect(() => {
@@ -50,42 +48,27 @@ const SLASettings = () => {
         }
     },[])
 
-    const onRemove = (sla_id) => {
+    const onRemove = (agent_id) => {
         const swalWithBootstrapButtons = Swal.mixin({
         })
           
           swalWithBootstrapButtons.fire({
             icon: 'info',
-            title: 'Delete SLA',
-            text: "Are you sure you want to delete this SLA?",
+            title: 'Delete Agent',
+            text: "Are you sure you want to delete this agent?",
             showCancelButton: true,
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel',
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
-              deleteSLA(sla_id).then(res => {
-                if(res.status == 200){
-                    swalWithBootstrapButtons.fire(
-                        'Deleted!',
-                        'SLA has been deleted.',
-                        'success'
-                    ).then(_ => tableAgent.current.refresh());
-                } else {
-                    swalWithBootstrapButtons.fire(
-                        'Error',
-                        'SLA deletion Failed.',
-                        'error'
-                    ) 
-                }
-              })
               
             } else if (
               result.dismiss === Swal.DismissReason.cancel
             ) {
               swalWithBootstrapButtons.fire(
                 'Cancelled',
-                'SLA deletion cancelled',
+                'Agent deletion cancelled',
                 'error'
               )
             }
@@ -93,11 +76,12 @@ const SLASettings = () => {
     };
 
     const columns = [
-        { id: 1, title: 'SLA Name', field: 'name', sortable: true },
-        { id: 3, title: 'Active Status', field: 'sla_enabled', sortable: false,
+        { id: 1, title: 'Agent Name', field: 'agent_name', sortable: true },
+        { id: 4, title: 'Agent NIK', field: 'agent_user_id', sortable: true },
+        { id: 3, title: 'Active Status', field: 'agent_enabled', sortable: true,
         filter_text: "Please type in lower case: 'true' for active, 'false' for inactive",
         render: item => {
-            return <InputSwitch checked={item.sla_enabled == true} disabled/>
+            return <InputSwitch checked={item.agent_enabled == true} disabled/>
         },
         }
     ];
@@ -110,8 +94,8 @@ const SLASettings = () => {
             render: item => {
                 return (
                     <div>
-                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editSLA(item.id)}/>
-                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
+                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editAgent(item.id)}/>
+                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.agent_user_id)}/>
                     </div>
                 );
             },
@@ -128,7 +112,7 @@ const SLASettings = () => {
     }
 
     const tableGetData = (role_name) => {
-        return getAllSLAs;
+        return () => {};
     }
 
     const genTableColumns = (role_name) => {
@@ -143,7 +127,7 @@ const SLASettings = () => {
         return false;
     }
 
-    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "SLA", onAddData, order: 'name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
+    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Agent", onAddData, order: 'agent_name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
 
     return (
         <div className="content-wrapper">
@@ -151,8 +135,8 @@ const SLASettings = () => {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                        <h2 className="title-breadcrum fw-500">SLA</h2>
-                            <h6>List of SLAs</h6>
+                        <h2 className="title-breadcrum fw-500">Agents</h2>
+                            <h6>List of Agents</h6>
                         </div>
                         {/*<div className="col-sm-6 right">
                             <button type="button" class="btn btn-outline-dark right" style={{padding: "0.5em 1em", margin:"0 5px"}}>
@@ -188,4 +172,4 @@ const SLASettings = () => {
 
 };
 
-export default SLASettings;
+export default UserSettings;

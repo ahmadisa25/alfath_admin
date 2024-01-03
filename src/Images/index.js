@@ -17,6 +17,7 @@ import rect_b2b from './rect_b2b.png';
 import caret_up from './caret_up_md.png';
 import chrome_tote from './chrome_tote.png';
 import chart_up from './chart_up.png';
+import group from './group.png';
 import chart_down from './chart_down.png';
 import id_flag from './id_flag.png';
 import pp_default from './pp_default.jpg';
@@ -50,4 +51,4 @@ import service_request from './service-request.svg';
 import dashboard from './dashboard.svg';
 import requester_illus from './servicedesk-requester.png';
 import bg_login_servicedesk from './bg_login-servicedesk.png';
-export { bg_login_servicedesk, bg_login, browse, browse2, service, empty_data, hawk, logo, menu_so, menu_po, menu_delivery, menu_payment,menu_user, menu_transfer, print, qr_code, bglogin, pp_default, trash, approval, productstock, wfh, notification, b2b_portal, modena_logo, chart_up, chart_down, login_bg, data_update, id_flag, rect_red, rect_b2b, data_update_dark, caret_up, chrome_tote, serious_warning, add_circle, modena, datetime_input, mailbox, pending, unresolved, modena_letter, services, service_request, incident, issues, dashboard, requester_illus, microsoft, overdue}
+export { bg_login_servicedesk, bg_login, browse, browse2, service, empty_data, hawk, logo, menu_so, menu_po, menu_delivery, menu_payment,menu_user, menu_transfer, print, qr_code, bglogin, pp_default, trash, approval, productstock, wfh, notification, b2b_portal, modena_logo, chart_up, chart_down, login_bg, data_update, id_flag, rect_red, rect_b2b, data_update_dark, caret_up, chrome_tote, serious_warning, add_circle, modena, datetime_input, mailbox, pending, unresolved, modena_letter, services, service_request, incident, issues, dashboard, requester_illus, microsoft, overdue, group}

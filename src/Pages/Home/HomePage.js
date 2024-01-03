@@ -6,8 +6,6 @@ import { isObjectEmpty, permissionCheck, truncateToEllipsis } from '../../Utils/
 import { useNavigate } from 'react-router-dom';
 import { Bar, Pie } from 'react-chartjs-2';
 import { logoutUser } from '../../Service/UserService';
-import { getDashboardData } from  '../../Service/DashboardService';
-import ServiceCategories from '../Pages/Settings/CategoryContents';
 import IncidentCategories from '../Incident/CategoryContents';
 
 import DashboardCard from '../../Components/DashboardCard';
@@ -21,9 +19,8 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-import { mailbox, overdue, pending, unresolved } from '../../Images';
+import { group, mailbox, pending } from '../../Images';
 import { capitalize } from 'lodash';
-import { getAll } from '../../Service/IncidentService';
 import moment from 'moment';
 
 
@@ -176,52 +173,6 @@ function HomePage() {
                 })
                 navigate('/requester-home');
             }
-
-            getDashboardData().then(res => {
-                if(res.status == 200){  
-                    setTopCardsState({
-                        pending:res.data.total_pending,
-                        unresolved: res.data.total_unresolved,
-                        new: res.data.total_new,
-                        overdue:res.data.unresolved_tickets_count && res.data.unresolved_tickets_count.length > 0 && res.data.unresolved_tickets_count[0].count
-                    });
-
-                    let data_incident = {...incident_data};
-                    data_incident.labels= res.data.top5s.incident.categories;
-                    data_incident.datasets[0].data=res.data.top5s.incident.data;
-
-                    setIncidentData(data_incident);
-                    setShowIncidentChart(true);
-
-                    let data_request = {...request_data};
-                    data_request.labels = res.data.top5s.service_request.categories;
-                    data_request.datasets[0].data=res.data.top5s.service_request.data;
-
-                    setRequestData(data_request);
-                    setShowRequestChart(true);
-
-                    setThisWeekResolved(res.data.this_week_resolved);
-                    setNewTickets(res.data.new_tickets);
-                    setOverdueTicketsList(res.data.unresolved_tickets);
-                    if(res.data.current_achievement){
-                        let achievement_numbers = [res.data.current_achievement[0].total_ticket, res.data.current_achievement[1].total_ticket]
-                        setAchievementData({...achievement_data,     datasets: [
-                            {
-                              data: achievement_numbers,
-                              backgroundColor: [
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                              ],
-                              borderColor: [
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(75, 192, 192, 1)',
-                              ],
-                              borderWidth: 1,
-                            },
-                          ],})
-                    }
-                }
-            })
         } else {
             logoutUser(userInfo.role_name);
         }
@@ -265,21 +216,7 @@ function HomePage() {
     useEffect(() => {
        let category_name = selected_category.name ?? selected_category.category_name;
        if(selected_type == "incident"){
-            getAll({filter:`category_name:${category_name}`, perpage:3}).then(res => {
-                if(res.data.status == 200){
-                    setTableData(res.data.data);
-                    selectRef.current.value="";
-                    setSelectedType("");
-                }
-            })
         } else if(selected_type == "service-request"){
-            getAll({filter:`category_name:${category_name}`, perpage:3}).then(res => {
-                if(res.data.status == 200){
-                    setTableData(res.data.data);
-                    selectRef.current.value="";
-                    setSelectedType("");
-                }
-            })
         }
     }, [selected_category])
 
@@ -300,7 +237,7 @@ function HomePage() {
                                                     </button>
                                                 </div>
                                                 <div className="modal-body">
-                                                    <ServiceCategories sendCategoryToParent={onSetCategory}/>
+                                                   
                                                 </div>
                                             </div>
                                         </div>
@@ -356,37 +293,37 @@ function HomePage() {
     </div>*/}
                         <div className="row">
                     
-                    <div className="col-xl-3 col-md-3 mb-3">
+                    <div className="col-xl-4 col-md-4 mb-4">
                         <div className="card  h-100 py-2">
-                            <DashboardCard card_title="New Tickets"  stats={top_cards_state.new} explanation_text={"* Incoming incidents and service requests"} icon={mailbox}/>
+                            <DashboardCard card_title="New Courses"  stats={top_cards_state.new} explanation_text={"* Newly made lessons by our instructors"} icon={mailbox}/>
                         </div>
                     </div>
-                    <div className="col-xl-3 col-md-3 mb-3">
+                    <div className="col-xl-4 col-md-4 mb-4">
                         <div className="card  h-100 py-2">
-                             <DashboardCard card_title="Pending Tickets"  stats={top_cards_state.pending} explanation_text={"* Tickets needing third-party interventions"} icon={pending} />
+                             <DashboardCard card_title="Total Students"  stats={top_cards_state.pending} explanation_text={"* Number of students enrolled in the system"} icon={group} />
                         </div>
                     </div>
 
-                    <div className="col-xl-3 col-md-3 mb-3">
+                    <div className="col-xl-4 col-md-4 mb-4">
                         <div className="card  h-100 py-2">
-                                <DashboardCard card_title="Unresolved Tickets"  stats={top_cards_state.unresolved} explanation_text={"* Incidents or requests past their resolve due"} icon={unresolved} icon_width={120}/>
+                                <DashboardCard card_title="% Enrollments Completed"  stats={50} explanation_text={"* Percentage of completed course enrollments"} icon={pending} icon_width={120}/>
                         </div>
                     </div>
-                    <div className="col-xl-3 col-md-3 mb-3">
+                    {/*<div className="col-xl-3 col-md-3 mb-3">
                         <div className="card  h-100 py-2">
                                 <DashboardCard card_title="Overdue Tickets" stats={top_cards_state.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
                         </div>
-                    </div>
+                    </div>*/}
                         </div>
                     </div>
 
                     </div>
                     <div className="row">
-                        <div className="col-md-4">
+                        <div className="col-md-6">
                             <div className="card mb-4" style={{border:"none"}}>
                                 <div
                                     className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Top 5 Incident Categories</h5>
+                                    <h5 className="m-0 fw-500 color-black43">Top 5 Enrolled Courses</h5>
                                     {/*<div className="dropdown no-arrow">
                                         <select name='ppn' className='form-control ps-0'>
                                             <option>Select One</option>
@@ -401,11 +338,11 @@ function HomePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-6">
                             <div className="card mb-4" style={{border:"none"}}>
                                 <div
                                     className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Top 5 Service Request Categories</h5>
+                                    <h5 className="m-0 fw-500 color-black43">Top 5 Finished Courses</h5>
                                     {/*<div className="dropdown no-arrow">
                                         <select name='ppn' className='form-control ps-0'>
                                             <option>Select One</option>
@@ -420,7 +357,7 @@ function HomePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-4">
+                        {/*<div className="col-md-4">
                             <div className="card mb-4" style={{border:"none"}}>
                                 <div
                                     className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
@@ -433,7 +370,7 @@ function HomePage() {
 
                                 </div>
                             </div>
-                        </div>
+</div>*/}
                     </div>
                     <div className="row">
                         <div className="col-md-3">

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { modena_letter } from '../Images';
 import { logout } from '../Redux/Action/AuthAction';
 import { useNavigate } from 'react-router-dom';
 import InitialIcon from './InitialIcon';
-import { includes } from 'lodash';
+import { FaMosque } from "react-icons/fa";
 
 const Topbar = () => {
     let { userInfo } = useSelector(state => state.auth);
@@ -49,10 +48,10 @@ const Topbar = () => {
             <div className='row' style={{display:"flex", width: "100%", justifyContent:"space-between"}}>
                 <div className='col-md-6'>
                     <div style={{marginTop:"0.55em", display:"flex", columnGap:"17px"}}>
-                        <div>
-                            <img src={modena_letter} style={{width:30}}/>
+                        <div style={{color:"black"}}>
+                            <FaMosque/>
                         </div>
-                        <h5 className="black bold">IT Service Desk MODENA</h5>
+                        <h5 className="black bold">Al-Fath Learning Centre</h5>
                     </div>
                     {/*<div class="input-group mt-1">
                         <div class="form-outline" style={{width: "50%", display:"flex", alignItems:"center", backgroundColor:"#ECECEC", borderRadius: "5px"}}>

@@ -7,13 +7,9 @@ import { login, authSSO } from '../../Redux/Action/AuthAction';
 import LoginLogo from '../../Components/LoginLogo/LoginLogo';
 import Swal from 'sweetalert2';
 import { bg_login_servicedesk, microsoft } from '../../Images';
-import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-import { loginRequest } from "../../authConfig";
 
 
 const LoginScreen = () => {
-  const { instance, accounts } = useMsal();
-  const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [pswState, setPswState] = useState(false);
@@ -39,32 +35,8 @@ const LoginScreen = () => {
 
   const buttonMicrosoftCLick = () => {
     localStorage.setItem('autoLogin', true);
-    instance.loginRedirect(loginRequest).catch((err) => { console.log("Error", err); });
     //window.location.href = 'mslogin';
   }; 
-
-  useEffect(() => {
-    const msalaccountkeys = sessionStorage.getItem("msal.account.keys");
-    if (isAuthenticated && msalaccountkeys) {
-
-      localStorage.removeItem('autoLogin');
-      instance
-        .acquireTokenSilent({ ...loginRequest, account: accounts[0] })
-        .then((res) => {
-          const { accessToken } = res;
-          dispatch(authSSO(navigate, { access_token: accessToken }, ({ response }) => {
-            if (response && response.data && response.data.message) {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: response.data.message,
-                timer: 1500,
-              })
-            }
-          }));
-        }).catch(err => console.log(err));
-    }
-  }, [isAuthenticated]);
 
 
   return (

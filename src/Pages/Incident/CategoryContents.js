@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import Swal from 'sweetalert2';
-import {getCategories, getAllCategories} from '../../Service/CategoryService';
 import {
     useNavigate
 } from "react-router-dom";
@@ -28,18 +27,6 @@ const Category = ({ category, deliverCategory}) => {
         setClicked(click_status)
         if(click_status){
             setProcessing(true);
-            getCategories(category_id,{mode:"master"}).then(res => {
-                if(res.status == 200){
-                    if(res.data && res.data.length > 0) setChildren(res.data);
-                    setProcessing(false);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: "Failed to get category data due to an unknown error. Please try to refresh the page or contact support!"
-                     }).then(setProcessing(false));
-                }
-            })
         } else{
             setChildren([]);
         }
@@ -80,36 +67,10 @@ const CategoryContents = ({sendCategoryToParent}) => {
     useEffect(() => {
         if(incident_category_search){
             clearTimeout(incident_search_timer_id);
-            incident_search_timer_id = setTimeout(() => getAllCategories({filter:`category_name:${incident_category_search},category_depth:${incident_category_depth},type:incident`}).then(res => {
-                if(res.status == 200){
-                    setIncidentCategorySearchResults(res.data.data);
-                }
-            }), 300);
+            incident_search_timer_id = setTimeout(() => {});
         }
     }, [incident_category_search])
 
-    useEffect(() => {
-        getCategories(null, {mode:"master"}).then(res => {
-            if(res.status == 200){
-                const incident_categories = [];
-
-                if(res.data && res.data.length > 0){
-                    res.data.forEach(item => {
-                        if(item.type == "incident") incident_categories.push(item);
-                        setIncidentCategoriesList(incident_categories);
-                    })
-                }
-                //setCategoriesList(res.data);
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: "Get category data failed!"
-                    });
-            }
-        })
-        
-    },[]);
 
     return(
             <div className="content-wrapper">

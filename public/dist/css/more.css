@@ -379,11 +379,12 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 .svc-card-header{
-    background:#FAA819;
+    background:#cd5700;
 }
 
 .svc-card-header h5{
     font-size:20px;
+    color: #f9e076;
 }
 
 .catalog-parent-link{

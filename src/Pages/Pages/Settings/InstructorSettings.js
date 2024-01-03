@@ -4,7 +4,6 @@ import {
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import MTable from '../../../Components/MTable/MTable';
-import {deleteAgent, getAllAgents} from '../../../Service/AgentService';
 import Swal from 'sweetalert2';
 import { InputSwitch } from 'primereact/inputswitch';
 import Overlay from '../../../Components/Overlay';
@@ -14,7 +13,6 @@ import {BsTrashFill} from 'react-icons/bs';
 import ActionButton from '../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
 import { permissionCheck } from '../../../Utils/Utils';
-import { data_update_dark } from '../../../Images';
 
 
 const { $ } = window;   
@@ -64,21 +62,6 @@ const UserSettings = () => {
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
-              deleteAgent(agent_id).then(res => {
-                if(res.status == 200){
-                    swalWithBootstrapButtons.fire(
-                        'Deleted!',
-                        'Agent has been deleted.',
-                        'success'
-                    ).then(_ => tableAgent.current.refresh());
-                } else {
-                    swalWithBootstrapButtons.fire(
-                        'Error',
-                        'Agent deletion Failed.',
-                        'error'
-                    ) 
-                }
-              })
               
             } else if (
               result.dismiss === Swal.DismissReason.cancel
@@ -129,7 +112,7 @@ const UserSettings = () => {
     }
 
     const tableGetData = (role_name) => {
-        return getAllAgents;
+        return () => {};
     }
 
     const genTableColumns = (role_name) => {

@@ -18,7 +18,7 @@ import {
 import { permissionCheck, prunePhoneNumber } from '../../../Utils/Utils';
 import { getAllGroups } from '../../../Service/GroupService';
 import ScrollToTop from 'react-scroll-to-top';
-import { createAgent, mapAgentToGroup, getAgent, unmapAgentFromGroup, updateAgent } from '../../../Service/AgentService';
+//import { createAgent, mapAgentToGroup, getAgent, unmapAgentFromGroup, updateAgent } from '../../../Service/AgentService';
 
 const GENERAL_INFO = 1;
 //const EMPLOYMENT_INFORMATION = 2;
@@ -47,35 +47,6 @@ const AgentForm = () => {
 
         if(agent_id){
             if(permissionCheck(userInfo, "settings", "update")){
-                getAgent(agent_id).then(res => {
-                    if(res.status == 200){
-                        Object.keys(res.data).forEach(key => {
-                            setValue(key, res.data[key]);
-                            if(key=="agent_signature") setAgentSignature(res.data[key])
-                            else if(key == "agent_enabled") setAgentEnabled(res.data[key])
-                        })
-                        if(res.data.agent_groups.length){
-                            let groups = res.data.agent_groups;
-                            setValue("group_name", groups[0].group_name);
-                            setValue("group", groups[0].group_id);
-                            setPreviousGroup(groups[0].group_id);
-                        }
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: "Failed to get agent data"
-                         })
-                        navigate('/');
-                    }
-                }).catch(err => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: "Failed to get agent data"
-                     })
-                    navigate('/');
-                })
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -151,26 +122,6 @@ const AgentForm = () => {
             reverseButtons: true
         }).then((result) => {
         if (result.isConfirmed) {
-            unmapAgentFromGroup(agent_id, group_id).then(res => {
-            if(res.data.status == 200){
-                swalWithBootstrapButtons.fire(
-                    'Removed!',
-                    'Agent has been removed from that group.',
-                    'success'
-                ).then(r => {
-                    setValue('group', null);
-                    setValue('group_name', '');
-                    setState({ ...state, isGroupFocus: false, groups:[] });
-                });
-            } else {
-                const message = res.data.message || "Assignment removal failed";
-                swalWithBootstrapButtons.fire(
-                    'Error',
-                    message,
-                    'error'
-                ) 
-            }
-            })
             
         } else if (
             result.dismiss === Swal.DismissReason.cancel
@@ -219,119 +170,6 @@ const AgentForm = () => {
         delete user_input.group_name;
         user_input.agent_mobile_phone =  user_input.agent_mobile_phone && user_input.agent_mobile_phone > 0 ?  prunePhoneNumber(user_input.agent_mobile_phone): 0;
         user_input.agent_work_phone = user_input.agent_work_phone && user_input.agent_work_phone > 0 ? prunePhoneNumber(user_input.agent_work_phone).replace(/\s/g,''): 0;
-        if(!agent_id){
-            createAgent(user_input).then(res => {
-                let stats = res.data.status||res.status
-                if(stats == 200){
-                    setState({...state, processing:false})
-                    if(group_id){
-                        const map_input = {
-                            "agent_id": res.data.agent_id,
-                            "group_id": group_id
-                        }
-                        mapAgentToGroup(map_input).then(res => {
-                            if(res.status == 201)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: "A new agent has been created!"
-                             }).then( () => navigate('/agent-settings'));
-                             else if(res.status == 200){
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success!',
-                                    text: "An agent has been updated!"
-                                 }).then( () => navigate('/agent-settings'));
-                             }
-                             else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Agent Group Mapping Failed!',
-                                    text: "Please try again or contact support!"
-                                }).then( () => navigate('/agent-settings'));
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: "A new agent has been created!"
-                         }).then( () => navigate('/agent-settings'));
-                    } 
-                   
-                } else {
-                    setState({...state, processing:false})
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Agent Creation Failed!',
-                        text: res.data.message
-                     });
-                } 
-            }).catch(err => {
-                setState({...state, processing:false})
-                let msg = "There's an error in processing your request. Please try again or contact support";
-                if(err.response && err.response.data && err.response.data.message) msg = err.response.data.message;
-                Swal.fire({
-                    icon: 'error',
-                    title: "error",
-                    text: msg
-                 });
-            })
-        } else{
-            updateAgent(agent_id, user_input).then(res => {
-                if(res.status == 200){
-                    setState({...state, processing:false})
-                    if(group_id && (previous_group_id !== group_id)){
-                        const map_input = {
-                            "agent_id": agent_id,
-                            "group_id": group_id
-                        }
-                        mapAgentToGroup(map_input).then(res => {
-                            if(res.status == 201)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: "An agent has been updated!"
-                             }).then( () => navigate('/agent-settings'));
-                             else if(res.status == 200){
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success!',
-                                    text: "An agent has been updated!"
-                                 }).then( () => navigate('/agent-settings'));
-                             } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Agent Group Mapping Failed!',
-                                    text: "Please try again or contact support!"
-                                }).then( () => navigate('/agent-settings'));
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: "An agent has been updated!"
-                         }).then( () => navigate('/agent-settings'));
-                    }
-                    
-                } else {
-                    setState({...state, processing:false})
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Agent Update Failed!',
-                        text: res.data.message
-                     });
-                } 
-            }).catch(err => {
-                setState({...state, processing:false})
-                Swal.fire({
-                    icon: 'error',
-                    title: "error",
-                    text: "There's an error in processing your request. Please try again or contact support"
-                 });
-            })
-        }
         
     }
     

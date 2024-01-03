@@ -2,15 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './Redux/Store/Store';
 import axios from 'axios';
 import { ACTION_LOGIN, ACTION_LOGOUT } from './Redux/Action/AuthAction';
 import { getRoleById } from './Service/UserService';
-import { PublicClientApplication } from '@azure/msal-browser';
-import { MsalProvider } from '@azure/msal-react';
-import { msalConfig } from './authConfig';
 
 const { $ } = window;
 const REFRESH_URL = 'v1/refresh';
@@ -103,14 +99,11 @@ if (access_token) {
   store.dispatch({ type: ACTION_LOGOUT });
 }
 
-const msalInstance = new PublicClientApplication(msalConfig);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <MsalProvider instance={msalInstance}>
     <Provider store={store}>
       <App />
     </Provider>
-  </MsalProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
