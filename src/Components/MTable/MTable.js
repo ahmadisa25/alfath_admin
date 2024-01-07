@@ -16,6 +16,8 @@ import TablePlaceholder from './TablePlaceholder';
 const $ = window.$;
 let timeoutId = 0;
 
+//This source code is made by the 2022-2024 Modena Satrio Software Development Team
+
 const MTable = forwardRef(({ columns, onAddData, showIndex, showPaginationCounter = true, showPropertiesButton = false, onPropertiesSelect, showAddButton, order, direction, getData, hideFilter, id, perpage, rowClick, rowSelector, searchBarWidth, addButtonText, minTableWidth, stickyEnd, showMoreActions, showCheckbox=false, tableId=null}, ref) => {
   const [state, setCurrentState] = useState({
     data: [],
@@ -31,8 +33,8 @@ const MTable = forwardRef(({ columns, onAddData, showIndex, showPaginationCounte
     perpage: perpage || 10,
     search: '',
     filter: '',
-    order: order ? order : (columns && columns.length > 0 ? columns[0].field : ''),
-    direction: direction ? direction : 'asc',
+    order: order ? order +":" + direction: (columns && columns.length > 0 ? columns[0].field + ":" + direction : ''),
+    //direction: direction ? direction : 'asc',
     refresh: false
   });
 
@@ -53,8 +55,9 @@ const MTable = forwardRef(({ columns, onAddData, showIndex, showPaginationCounte
       delete _paginatpr.refresh;
       getData && getData(_paginatpr).then(res => {
         clearTimeout(loadTimeout);
-        const { data: { data, total } } = res;
-        setState({ data, total, processing: false });
+        console.log(res.data)
+        const { data: { Data, Total } } = res;
+        setState({ data: Data, total: Total, processing: false });
       }).catch(err => {
         clearTimeout(loadTimeout);
         setState({ processing: false, data: [], total: 0 });
@@ -105,7 +108,7 @@ const MTable = forwardRef(({ columns, onAddData, showIndex, showPaginationCounte
 
   const onSort = field => () => {
     const direction = paginator.direction == 'asc' ? 'desc' : 'asc';
-    setPaginator({ ...paginator, order: field, direction });
+    setPaginator({ ...paginator, order: `${field}:${direction}` });
   };
 
   const onSearchChange = e => {

@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import HomePage from '../../Pages/Home/HomePage';
 import NotFound from '../../Pages/Error/NotFound';
 import Profile from '../../Pages/User/Profile';
+import InstructorSettings from '../../Pages/Pages/Settings/InstructorSettings';
 
 const routeList = [
   '/users',
@@ -58,6 +59,7 @@ const HomeNavigation = () => {
           <Route path="/" element={<LayoutScreen />} >
             <Route path="/" element={<HomePage />} />
             <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/instructors" element={<InstructorSettings />} />
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/profile" element={<Profile />} />
           </Route>

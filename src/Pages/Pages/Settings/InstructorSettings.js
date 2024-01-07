@@ -13,10 +13,11 @@ import {BsTrashFill} from 'react-icons/bs';
 import ActionButton from '../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
 import { permissionCheck } from '../../../Utils/Utils';
+import { getAllInstructors } from '../../../Service/InstructorService';
 
 
 const { $ } = window;   
-const UserSettings = () => {
+const InstructorSettings = () => {
     let { userInfo } = useSelector(state => state.auth);
     moment.locale('id');
     const [modal_state, setModalState] = useState("add");
@@ -76,12 +77,12 @@ const UserSettings = () => {
     };
 
     const columns = [
-        { id: 1, title: 'Agent Name', field: 'agent_name', sortable: true },
-        { id: 4, title: 'Agent NIK', field: 'agent_user_id', sortable: true },
-        { id: 3, title: 'Active Status', field: 'agent_enabled', sortable: true,
+        { id: 1, title: 'Name', field: 'name', sortable: true },
+        { id: 2, title: 'Email', field: 'email', sortable: true },
+        { id: 3, title: 'Mobile Phone', field: 'mobile_phone', sortable: true,
         filter_text: "Please type in lower case: 'true' for active, 'false' for inactive",
         render: item => {
-            return <InputSwitch checked={item.agent_enabled == true} disabled/>
+            return <span>+62{item.mobile_phone}</span>
         },
         }
     ];
@@ -112,7 +113,7 @@ const UserSettings = () => {
     }
 
     const tableGetData = (role_name) => {
-        return () => {};
+        return (params) => getAllInstructors(params);
     }
 
     const genTableColumns = (role_name) => {
@@ -127,7 +128,7 @@ const UserSettings = () => {
         return false;
     }
 
-    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Agent", onAddData, order: 'agent_name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
+    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Instructor", onAddData, order: 'Name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
 
     return (
         <div className="content-wrapper">
@@ -135,8 +136,8 @@ const UserSettings = () => {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                        <h2 className="title-breadcrum fw-500">Agents</h2>
-                            <h6>List of Agents</h6>
+                        <h2 className="title-breadcrum fw-500">Instructors</h2>
+                            <h6>List of Instructors</h6>
                         </div>
                         {/*<div className="col-sm-6 right">
                             <button type="button" class="btn btn-outline-dark right" style={{padding: "0.5em 1em", margin:"0 5px"}}>
@@ -172,4 +173,4 @@ const UserSettings = () => {
 
 };
 
-export default UserSettings;
+export default InstructorSettings;
