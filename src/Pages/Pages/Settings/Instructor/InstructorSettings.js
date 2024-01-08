@@ -3,35 +3,33 @@ import {
     useNavigate
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import MTable from '../../../Components/MTable/MTable';
+import MTable from '../../../../Components/MTable/MTable';
 import Swal from 'sweetalert2';
-import { InputSwitch } from 'primereact/inputswitch';
-import Overlay from '../../../Components/Overlay';
+import Overlay from '../../../../Components/Overlay';
 import moment from 'moment';
 import {MdOutlineModeEdit} from 'react-icons/md';
 import {BsTrashFill} from 'react-icons/bs';
-import ActionButton from '../../../Components/MTable/ActionButton';
+import ActionButton from '../../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
-import { permissionCheck } from '../../../Utils/Utils';
-import { getAllInstructors } from '../../../Service/InstructorService';
+import { permissionCheck } from '../../../../Utils/Utils';
+import { getAllInstructors } from '../../../../Service/InstructorService';
 
 
 const { $ } = window;   
 const InstructorSettings = () => {
     let { userInfo } = useSelector(state => state.auth);
     moment.locale('id');
-    const [modal_state, setModalState] = useState("add");
     const navigate = useNavigate();
     const tableAgent = useRef();
     const [state, setState] = useState({ processing : false });
 
     const editAgent = (agent_id) => {
-        navigate(`/agent-form/${agent_id}`)
+        navigate(`/instructor-form/${agent_id}`)
     }
 
     const onAddData = () => {
         //$('#modal-document').modal();
-        navigate('/agent-form');
+        navigate('/instructor-form');
     }
 
     useEffect(() => {
@@ -104,12 +102,13 @@ const InstructorSettings = () => {
     }
 
     const showAddButton = (access) => {
-        if(access){
+        /*if(access){
             if(access.settings){
                 if(access.settings.can_view) return true;
             }
         }
-        return false;
+        return false;*/
+        return true;
     }
 
     const tableGetData = (role_name) => {

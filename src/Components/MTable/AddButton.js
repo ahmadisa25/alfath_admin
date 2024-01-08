@@ -5,9 +5,9 @@ const AddButton = ({ onAddDataClick, addButtonText }) => {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <div>
                     <button
-                        style={{display:"flex", alignItems:"center", fontSize: "16px"}}
+                        style={{display:"flex", alignItems:"center", fontSize: "16px", color: "white"}}
                         type="button"
-                        className="btn btn-block b2b-btn-add"
+                        className="btn btn-block tawny"
                         onClick={onAddDataClick} >
                         <i className="fa fa-plus" /> &nbsp;{addButtonText? addButtonText: "Add"}
                     </button>

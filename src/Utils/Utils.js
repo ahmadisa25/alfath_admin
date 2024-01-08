@@ -9,6 +9,15 @@ export const updateObject = (currentObject, updatedProperties) => {
     };
 };
 
+export const urlEncodeData = (data) => {
+    let form_body = [];
+    for (let prop in data){
+        form_body.push(encodeURIComponent(prop) + "=" + encodeURIComponent(data[prop]))
+    }
+
+    return form_body.join("&");
+}
+
 export const prunePhoneNumber = (phone_number) => {
     if(phone_number[0] == "0") return phone_number.slice(1);
     else if(phone_number[0] == "6" && phone_number[1] == "2") return phone_number.slice(2);
