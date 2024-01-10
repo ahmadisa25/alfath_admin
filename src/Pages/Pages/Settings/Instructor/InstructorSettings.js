@@ -20,7 +20,7 @@ const InstructorSettings = () => {
     let { userInfo } = useSelector(state => state.auth);
     moment.locale('id');
     const navigate = useNavigate();
-    const tableAgent = useRef();
+    const instructors_table = useRef();
     const [state, setState] = useState({ processing : false });
 
     const editAgent = (agent_id) => {
@@ -53,7 +53,7 @@ const InstructorSettings = () => {
           
           swalWithBootstrapButtons.fire({
             icon: 'info',
-            title: 'Delete instructor',
+            title: 'Delete Instructor',
             text: "Are you sure you want to delete this instructor?",
             showCancelButton: true,
             confirmButtonText: 'Delete',
@@ -61,10 +61,21 @@ const InstructorSettings = () => {
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
+                setState({...state, processing:true});
               deleteInstructor(id).then(res => {
-                console.log(res)
+                if(res.data.Status == 200){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Instructor data has successfully been deleted!"
+                     }).then(_ => {
+                        setState({...state, processing:false});
+                        instructors_table.current.refresh();
+                     })
+                }
               }).catch((err) => {
-                console.log(err)
+                setState({...state, processing:false});
+                console.log(err);
               });
             } else if (
               result.dismiss === Swal.DismissReason.cancel
@@ -116,7 +127,11 @@ const InstructorSettings = () => {
     }
 
     const tableGetData = (role_name) => {
-        return (params) => getAllInstructors({filter:"deleted_at:null", ...params});
+        return (params) => {
+            let filter = "deleted_at:null";
+            if(params.filter) filter += "," + params.filter;
+            return getAllInstructors({...params, filter});
+        }
     }
 
     const genTableColumns = (role_name) => {
@@ -165,7 +180,7 @@ const InstructorSettings = () => {
                         <div className="card-body">
                             <Overlay display={state.processing} />
                             <div>
-                                <MTable {...propsTable} ref={tableAgent} />
+                                <MTable {...propsTable} ref={instructors_table} />
                             </div>
                         </div>
                     </div>

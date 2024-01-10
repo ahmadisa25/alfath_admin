@@ -380,6 +380,10 @@ input[type=number]::-webkit-outer-spin-button {
     background:#cd5700;
 }
 
+.tawny-ii{
+    background:#80471c;
+}
+
 
 .svc-card-header{
     background:#cd5700;
@@ -2003,9 +2007,9 @@ color: #434343;
 }
 
 .b2b-th{
-    background: #f6ecd9;
+    background: #cd5700;
     padding: 15px !important;
-    color: #FAA819;
+    color: white;
     font-weight:600;
     font-style: normal;
     font-size: 12px;
