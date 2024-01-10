@@ -90,6 +90,15 @@ const InstructorForm = () => {
                      })
                  
                 }
+            }).catch(({response: {data}}) => {
+                setState({...state, processing: false})
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.Message || "There's an error with your request. Please try again or contact support!"
+                 }).then(_ => {
+                    setState({...state, processing: false})
+                 })
             })
         }
     }

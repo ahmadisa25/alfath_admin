@@ -12,7 +12,7 @@ import {BsTrashFill} from 'react-icons/bs';
 import ActionButton from '../../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
 import { permissionCheck } from '../../../../Utils/Utils';
-import { getAllInstructors } from '../../../../Service/InstructorService';
+import { deleteInstructor, getAllInstructors } from '../../../../Service/InstructorService';
 
 
 const { $ } = window;   
@@ -47,21 +47,25 @@ const InstructorSettings = () => {
         }
     },[])
 
-    const onRemove = (agent_id) => {
+    const onRemove = (id) => {
         const swalWithBootstrapButtons = Swal.mixin({
         })
           
           swalWithBootstrapButtons.fire({
             icon: 'info',
-            title: 'Delete Agent',
-            text: "Are you sure you want to delete this agent?",
+            title: 'Delete instructor',
+            text: "Are you sure you want to delete this instructor?",
             showCancelButton: true,
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel',
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
-              
+              deleteInstructor(id).then(res => {
+                console.log(res)
+              }).catch((err) => {
+                console.log(err)
+              });
             } else if (
               result.dismiss === Swal.DismissReason.cancel
             ) {
@@ -85,7 +89,7 @@ const InstructorSettings = () => {
         }
     ];
 
-    if(permissionCheck(userInfo, "settings", "delete") && permissionCheck(userInfo, "settings", "update")){
+    //if(permissionCheck(userInfo, "settings", "delete") && permissionCheck(userInfo, "settings", "update")){
         columns.push({
             id: 2,
             title: 'Action',
@@ -94,12 +98,12 @@ const InstructorSettings = () => {
                 return (
                     <div>
                             <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editAgent(item.id)}/>
-                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.agent_user_id)}/>
+                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
                     </div>
                 );
             },
         });
-    }
+    //}
 
     const showAddButton = (access) => {
         /*if(access){
@@ -112,7 +116,7 @@ const InstructorSettings = () => {
     }
 
     const tableGetData = (role_name) => {
-        return (params) => getAllInstructors(params);
+        return (params) => getAllInstructors({filter:"deleted_at:null", ...params});
     }
 
     const genTableColumns = (role_name) => {
