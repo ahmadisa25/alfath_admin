@@ -13,10 +13,7 @@ import {
 } from "react-router-dom";
 import { permissionCheck, prunePhoneNumber, urlEncodeData } from '../../../../Utils/Utils';
 import ScrollToTop from 'react-scroll-to-top';
-import { createInstructor } from '../../../../Service/InstructorService';
-
-const GENERAL_INFO = 1;
-
+import { createInstructor, getInstructor } from '../../../../Service/InstructorService';
 
 const { $ } = window;
 const InstructorForm = () => {
@@ -37,15 +34,22 @@ const InstructorForm = () => {
         }
 
         if(instructor_id){
-            if(permissionCheck(userInfo, "settings", "update")){
-            } else {
-                Swal.fire({
+            //if(permissionCheck(userInfo, "settings", "update")){
+                getInstructor(instructor_id).then(res => {
+                    if(res.data.Status == 200){
+                        setValue('Name', res.data.Data.Name)
+                        setValue('Email', res.data.Data.Email)
+                        setValue('MobilePhone', res.data.Data.MobilePhone)
+                    }
+                })
+            //} else {
+                /*Swal.fire({
                     icon: 'error',
                     title: 'Error!',
                     text: "You're not allowed to access that page!"
                  })
-                navigate('/');
-            }
+                navigate('/');*/
+            //}
         }
     },[])
 

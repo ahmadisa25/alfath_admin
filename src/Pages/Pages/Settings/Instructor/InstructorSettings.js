@@ -23,8 +23,8 @@ const InstructorSettings = () => {
     const instructors_table = useRef();
     const [state, setState] = useState({ processing : false });
 
-    const editAgent = (agent_id) => {
-        navigate(`/instructor-form/${agent_id}`)
+    const editInstructor = (instructor_id) => {
+        navigate(`/instructor-form/${instructor_id}`)
     }
 
     const onAddData = () => {
@@ -33,7 +33,7 @@ const InstructorSettings = () => {
     }
 
     useEffect(() => {
-        if(userInfo.access){
+        /*if(userInfo.access){
             if(userInfo.access.settings){
                 if(!userInfo.access.settings.can_view) {
                     Swal.fire({
@@ -44,7 +44,7 @@ const InstructorSettings = () => {
                     navigate('/');
                 }
             }
-        }
+        }*/
     },[])
 
     const onRemove = (id) => {
@@ -108,7 +108,7 @@ const InstructorSettings = () => {
             render: item => {
                 return (
                     <div>
-                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editAgent(item.id)}/>
+                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editInstructor(item.id)}/>
                             <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
                     </div>
                 );

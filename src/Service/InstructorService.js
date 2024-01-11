@@ -16,8 +16,14 @@ const deleteInstructor = (id, onSuccess, onError) => {
     return handleResponse(response, onSuccess, onError);
 };
 
+const getInstructor = (id, onSuccess, onError) => {
+    const response = axios.get(`/instructor/${id}`);
+    return handleResponse(response, onSuccess, onError);
+};
+
 export {
     getAllInstructors,
     createInstructor,
-    deleteInstructor
+    deleteInstructor,
+    getInstructor
 }
