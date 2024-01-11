@@ -21,9 +21,15 @@ const getInstructor = (id, onSuccess, onError) => {
     return handleResponse(response, onSuccess, onError);
 };
 
+const updateInstructor = (id, params, onSuccess, onError) => {
+    const response = axios.put(`/instructor/${id}`, params);
+    return handleResponse(response, onSuccess, onError);
+};
+
 export {
     getAllInstructors,
     createInstructor,
     deleteInstructor,
-    getInstructor
+    getInstructor,
+    updateInstructor
 }

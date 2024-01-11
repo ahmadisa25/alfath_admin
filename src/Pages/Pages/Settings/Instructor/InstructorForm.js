@@ -13,7 +13,7 @@ import {
 } from "react-router-dom";
 import { permissionCheck, prunePhoneNumber, urlEncodeData } from '../../../../Utils/Utils';
 import ScrollToTop from 'react-scroll-to-top';
-import { createInstructor, getInstructor } from '../../../../Service/InstructorService';
+import { createInstructor, getInstructor, updateInstructor } from '../../../../Service/InstructorService';
 
 const { $ } = window;
 const InstructorForm = () => {
@@ -80,15 +80,35 @@ const InstructorForm = () => {
         let user_input = Object.assign({}, data);
         user_input.MobilePhone =  user_input.MobilePhone && user_input.MobilePhone > 0 ?  prunePhoneNumber(user_input.MobilePhone): 0;
         user_input = urlEncodeData(user_input)
-        console.log(user_input);
         if(!instructor_id){
             createInstructor(user_input).then(res => {
-                console.log(res)
                 if(res.status == 201){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
                         text: "Instructor data has successfully been created!"
+                     }).then(_ => {
+                        navigate('/instructors');
+                     })
+                 
+                }
+            }).catch(({response: {data}}) => {
+                setState({...state, processing: false})
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.Message || "There's an error with your request. Please try again or contact support!"
+                 }).then(_ => {
+                    setState({...state, processing: false})
+                 })
+            })
+        } else{
+            updateInstructor(instructor_id ,user_input).then(res => {
+                if(res.data.Status == 200){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Instructor data has successfully been updated!"
                      }).then(_ => {
                         navigate('/instructors');
                      })
