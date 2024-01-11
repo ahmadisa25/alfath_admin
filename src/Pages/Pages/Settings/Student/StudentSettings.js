@@ -3,38 +3,37 @@ import {
     useNavigate
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import MTable from '../../../Components/MTable/MTable';
+import MTable from '../../../../Components/MTable/MTable';
 import Swal from 'sweetalert2';
-import { InputSwitch } from 'primereact/inputswitch';
-import Overlay from '../../../Components/Overlay';
+import Overlay from '../../../../Components/Overlay';
 import moment from 'moment';
 import {MdOutlineModeEdit} from 'react-icons/md';
 import {BsTrashFill} from 'react-icons/bs';
-import ActionButton from '../../../Components/MTable/ActionButton';
+import ActionButton from '../../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
-import { permissionCheck } from '../../../Utils/Utils';
+import { permissionCheck } from '../../../../Utils/Utils';
+import { deleteStudent, getAllStudents } from '../../../../Service/StudentService';
 
 
 const { $ } = window;   
-const UserSettings = () => {
+const StudentSettings = () => {
     let { userInfo } = useSelector(state => state.auth);
     moment.locale('id');
-    const [modal_state, setModalState] = useState("add");
     const navigate = useNavigate();
-    const tableAgent = useRef();
+    const students_table = useRef();
     const [state, setState] = useState({ processing : false });
 
-    const editAgent = (agent_id) => {
-        navigate(`/agent-form/${agent_id}`)
+    const editStudent = (student_id) => {
+        navigate(`/student-form/${student_id}`)
     }
 
     const onAddData = () => {
         //$('#modal-document').modal();
-        navigate('/agent-form');
+        navigate('/student-form');
     }
 
     useEffect(() => {
-        if(userInfo.access){
+        /*if(userInfo.access){
             if(userInfo.access.settings){
                 if(!userInfo.access.settings.can_view) {
                     Swal.fire({
@@ -45,24 +44,39 @@ const UserSettings = () => {
                     navigate('/');
                 }
             }
-        }
+        }*/
     },[])
 
-    const onRemove = (agent_id) => {
+    const onRemove = (id) => {
         const swalWithBootstrapButtons = Swal.mixin({
         })
           
           swalWithBootstrapButtons.fire({
             icon: 'info',
-            title: 'Delete Agent',
-            text: "Are you sure you want to delete this agent?",
+            title: 'Delete Student',
+            text: "Are you sure you want to delete this student?",
             showCancelButton: true,
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel',
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
-              
+                setState({...state, processing:true});
+              deleteStudent(id).then(res => {
+                if(res.data.Status == 200){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Student data has successfully been deleted!"
+                     }).then(_ => {
+                        setState({...state, processing:false});
+                        students_table.current.refresh();
+                     })
+                }
+              }).catch((err) => {
+                setState({...state, processing:false});
+                console.log(err);
+              });
             } else if (
               result.dismiss === Swal.DismissReason.cancel
             ) {
@@ -76,17 +90,17 @@ const UserSettings = () => {
     };
 
     const columns = [
-        { id: 1, title: 'Agent Name', field: 'agent_name', sortable: true },
-        { id: 4, title: 'Agent NIK', field: 'agent_user_id', sortable: true },
-        { id: 3, title: 'Active Status', field: 'agent_enabled', sortable: true,
+        { id: 1, title: 'Name', field: 'name', sortable: true },
+        { id: 2, title: 'Email', field: 'email', sortable: true },
+        { id: 3, title: 'Mobile Phone', field: 'mobile_phone', sortable: true,
         filter_text: "Please type in lower case: 'true' for active, 'false' for inactive",
         render: item => {
-            return <InputSwitch checked={item.agent_enabled == true} disabled/>
+            return <span>+62{item.mobile_phone}</span>
         },
         }
     ];
 
-    if(permissionCheck(userInfo, "settings", "delete") && permissionCheck(userInfo, "settings", "update")){
+    //if(permissionCheck(userInfo, "settings", "delete") && permissionCheck(userInfo, "settings", "update")){
         columns.push({
             id: 2,
             title: 'Action',
@@ -94,25 +108,30 @@ const UserSettings = () => {
             render: item => {
                 return (
                     <div>
-                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editAgent(item.id)}/>
-                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.agent_user_id)}/>
+                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editStudent(item.id)}/>
+                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
                     </div>
                 );
             },
         });
-    }
+    //}
 
     const showAddButton = (access) => {
-        if(access){
+        /*if(access){
             if(access.settings){
                 if(access.settings.can_view) return true;
             }
         }
-        return false;
+        return false;*/
+        return true;
     }
 
     const tableGetData = (role_name) => {
-        return () => {};
+        return (params) => {
+            let filter = "deleted_at:null";
+            if(params.filter) filter += "," + params.filter;
+            return getAllStudents({...params, filter});
+        }
     }
 
     const genTableColumns = (role_name) => {
@@ -127,7 +146,7 @@ const UserSettings = () => {
         return false;
     }
 
-    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Agent", onAddData, order: 'agent_name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
+    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Student", onAddData, order: 'Name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
 
     return (
         <div className="content-wrapper">
@@ -135,8 +154,8 @@ const UserSettings = () => {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                        <h2 className="title-breadcrum fw-500">Agents</h2>
-                            <h6>List of Agents</h6>
+                        <h2 className="title-breadcrum fw-500">Students</h2>
+                            <h6>List of Students</h6>
                         </div>
                         {/*<div className="col-sm-6 right">
                             <button type="button" class="btn btn-outline-dark right" style={{padding: "0.5em 1em", margin:"0 5px"}}>
@@ -161,7 +180,7 @@ const UserSettings = () => {
                         <div className="card-body">
                             <Overlay display={state.processing} />
                             <div>
-                                <MTable {...propsTable} ref={tableAgent} />
+                                <MTable {...propsTable} ref={students_table} />
                             </div>
                         </div>
                     </div>
@@ -172,4 +191,4 @@ const UserSettings = () => {
 
 };
 
-export default UserSettings;
+export default StudentSettings;

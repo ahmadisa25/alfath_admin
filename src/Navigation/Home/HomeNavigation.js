@@ -8,6 +8,8 @@ import NotFound from '../../Pages/Error/NotFound';
 import Profile from '../../Pages/User/Profile';
 import InstructorSettings from '../../Pages/Pages/Settings/Instructor/InstructorSettings';
 import InstructorForm from '../../Pages/Pages/Settings/Instructor/InstructorForm';
+import StudentSettings from '../../Pages/Pages/Settings/Student/StudentSettings';
+import StudentForm from '../../Pages/Pages/Settings/Student/StudentForm';
 
 const routeList = [
   '/users',
@@ -63,6 +65,9 @@ const HomeNavigation = () => {
             <Route path="/instructors" element={<InstructorSettings />} />
             <Route path="/instructor-form" element={<InstructorForm />} />
             <Route path="/instructor-form/:instructor_id" element={<InstructorForm />} />
+            <Route path="/students" element={<StudentSettings />} />
+            <Route path="/student-form" element={<StudentForm />} />
+            <Route path="/student-form/:student_id" element={<StudentForm />} />
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
