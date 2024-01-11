@@ -10,6 +10,8 @@ import InstructorSettings from '../../Pages/Pages/Settings/Instructor/Instructor
 import InstructorForm from '../../Pages/Pages/Settings/Instructor/InstructorForm';
 import StudentSettings from '../../Pages/Pages/Settings/Student/StudentSettings';
 import StudentForm from '../../Pages/Pages/Settings/Student/StudentForm';
+import CourseSettings from '../../Pages/Pages/Settings/Course/CourseSettings';
+import CourseForm from '../../Pages/Pages/Settings/Course/CourseForm';
 
 const routeList = [
   '/users',
@@ -68,6 +70,9 @@ const HomeNavigation = () => {
             <Route path="/students" element={<StudentSettings />} />
             <Route path="/student-form" element={<StudentForm />} />
             <Route path="/student-form/:student_id" element={<StudentForm />} />
+            <Route path="/courses" element={<CourseSettings />} />
+            <Route path="/course-form" element={<CourseForm />} />
+            <Route path="/course-form/:student_id" element={<CourseForm />} />
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
