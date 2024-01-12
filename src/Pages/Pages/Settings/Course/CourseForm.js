@@ -14,8 +14,12 @@ import {
 import { permissionCheck, prunePhoneNumber, urlEncodeData } from '../../../../Utils/Utils';
 import ScrollToTop from 'react-scroll-to-top';
 import { createCourse, getCourse, updateCourse } from '../../../../Service/CourseService';
+import { getAllInstructors } from '../../../../Service/InstructorService';
+import Select from 'react-select';
 
 const { $ } = window;
+
+let instructor_timer_id = -1;
 const CourseForm = () => {
     let { userInfo } = useSelector(state => state.auth);
     //useEffect Entrance
@@ -57,27 +61,60 @@ const CourseForm = () => {
 
     const [state, setState] = useState({ 
         processing : false, 
+        available_instructors: [],
+        is_instructor_focus: false
     });
 
     const { course_id } = useParams();
     //const [agent_enabled, setAgentEnabled] = useState(false);
-    const {processing} = state;
+    const {processing, available_instructors, is_instructor_focus} = state;
     const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Name: '',  MobilePhone: '', Email: ""} });
+    const [instructors, setInstructors] = useState([]);
+    const [multi_select_val, setMultiSelectVal] = useState("");
 
-    const onReset = () => {
-        reset({ Name: '',  MobilePhone: '', Email: ""});
-        setState({
-            processing: false,
-            isEmailFocus: false,
-            isGroupFocus: false,
-            users:[],
-            groups:[]
-        });
+    const onChangeInstructor = (val) => {
+        if (val.length >= 3) {
+            clearTimeout(instructor_timer_id);
+            instructor_timer_id = setTimeout(() => getAllInstructors({search:val}).then((res) => {
+            let result = res.data.Data;
+            const converted_data_array = [];
+            result.forEach(item => {
+                converted_data_array.push({
+                    label: `${item.name} (${item.email})`,
+                    value: item.id
+                })
+            })
+
+            console.log(converted_data_array);
+            setState({ ...state, is_instructor_focus: true, available_instructors: converted_data_array });
+            }), 500);
+        } else {
+            clearTimeout(instructor_timer_id);
+            setState({ ...state, is_instructor_focus: false, available_instructors: [] });
+        }
     }
 
+    const onSelectInstructor = (item) => {
+        setInstructors(item);
+        setState({ ...state, is_instructor_focus: false, available_instructors: []});
+    };
+
     const onFormSubmit = (data) => {
+        if(!instructors || instructors.length == 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "Please select at least 1 instructor!"
+             })
+
+             return;
+        }
+        const converted_data_array = [];
+        instructors.forEach(item => {
+            converted_data_array.push(item.value);
+        })
         setState({...state, processing:true})
-        let user_input = Object.assign({}, data);
+        let user_input = Object.assign({}, data, {Instructors:converted_data_array});
         user_input.MobilePhone =  user_input.MobilePhone && user_input.MobilePhone > 0 ?  prunePhoneNumber(user_input.MobilePhone): 0;
         user_input = urlEncodeData(user_input)
         if(!course_id){
@@ -181,21 +218,37 @@ const CourseForm = () => {
                                                             {errors.Name && <span className='text-danger'>{errors.Name.message}</span>}
                                                     </div>
                                                     <div className='form-group'>
-                                                        <label htmlFor='Email' className="black"><b>E-mail</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type in lowercase only</i></label>
+                                                        <label htmlFor='Description' className="black"><b>Description</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type in lowercase only</i></label>
                                                         <textarea rows="10" className="inputLogin" maxLength="2000" id="Description" {...register("Description", {
-                                                        required: 'Description is required!',
+                                                        required: 'Course description is required!',
                                                         })} placeholder="Type min 3 char" className='form-control' autoComplete="off" disabled={course_id && course_id >0}/>
+                                                         {errors.Description && <span className='text-danger'>{errors.Description.message}</span>}
                                                     </div>
-                                                    <div className='form-group' style={{width:"10%"}}>
+                                                    <div className='form-group'>
+                                                        <label htmlFor='Instructors' className="black"><b>Instructors</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type in lowercase only</i></label>
+                                                        <Select
+                                                                            value={instructors}
+                                                                            options={available_instructors}
+                                                                            isMulti
+                                                                            onInputChange={(e) => {
+                                                                                setMultiSelectVal(e);
+                                                                                onChangeInstructor(e)
+                                                                            }}
+                                                                            onChange={(e) => onSelectInstructor(e)}
+                                                                            
+                                                        />
+                                                    </div>
+                                                    <div className='form-group' style={{width:"12%"}}>
                                                         <label htmlFor='Duration' className="black"><b>Duration</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type numbers only</i></label>
-                                                        <div className='d-flex align-items-center'>
+                                                        <div className='d-flex align-items-center' style={{columnGap:"20px"}}>
                                                             <div>
                                                                 <input type="number" className="inputLogin" maxLength="2000" id="Duration" {...register("Duration", {
-                                                                required: 'Duration is required!',
-                                                                })} placeholder="Type min 3 char" className='form-control' autoComplete="off" disabled={course_id && course_id >0}/>
+                                                                required: 'Course duration is required!',
+                                                                })} placeholder="60" className='form-control' autoComplete="off" disabled={course_id && course_id >0}/>
                                                             </div>
                                                             <div>Minutes</div>
                                                         </div>
+                                                        {errors.Duration && <span className='text-danger'>{errors.Duration.message}</span>}
                                                     </div>
                                                     
 
