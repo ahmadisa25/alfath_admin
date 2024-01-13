@@ -72,7 +72,7 @@ const HomeNavigation = () => {
             <Route path="/student-form/:student_id" element={<StudentForm />} />
             <Route path="/courses" element={<CourseSettings />} />
             <Route path="/course-form" element={<CourseForm />} />
-            <Route path="/course-form/:student_id" element={<CourseForm />} />
+            <Route path="/course-form/:course_id" element={<CourseForm />} />
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/profile" element={<Profile />} />
           </Route>

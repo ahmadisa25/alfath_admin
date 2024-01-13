@@ -81,7 +81,7 @@ const CourseSettings = () => {
             ) {
               swalWithBootstrapButtons.fire(
                 'Cancelled',
-                'Agent deletion cancelled',
+                'Course deletion cancelled',
                 'error'
               )
             }

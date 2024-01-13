@@ -42,8 +42,16 @@ const CourseForm = () => {
                 getCourse(course_id).then(res => {
                     if(res.data.Status == 200){
                         setValue('Name', res.data.Data.Name)
-                        setValue('Email', res.data.Data.Email)
-                        setValue('MobilePhone', res.data.Data.MobilePhone)
+                        setValue('Description', res.data.Data.Description)
+                        setValue('Duration', res.data.Data.Duration)
+
+                        if(res.data.Data.Instructors && res.data.Data.Instructors.length > 0){
+                            const available_instructors = [...instructors];
+                            res.data.Data.Instructors.forEach(item => {
+                                available_instructors.push({label: `${item.Name} (${item.Email})`, value: item.ID}) 
+                            })
+                            setInstructors(available_instructors);
+                        }
                     }
                 })
             //} else {
@@ -221,7 +229,7 @@ const CourseForm = () => {
                                                         <label htmlFor='Description' className="black"><b>Description</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type in lowercase only</i></label>
                                                         <textarea rows="10" className="inputLogin" maxLength="2000" id="Description" {...register("Description", {
                                                         required: 'Course description is required!',
-                                                        })} placeholder="Type min 3 char" className='form-control' autoComplete="off" disabled={course_id && course_id >0}/>
+                                                        })} placeholder="Type min 3 char" className='form-control' autoComplete="off"/>
                                                          {errors.Description && <span className='text-danger'>{errors.Description.message}</span>}
                                                     </div>
                                                     <div className='form-group'>
@@ -244,7 +252,7 @@ const CourseForm = () => {
                                                             <div>
                                                                 <input type="number" className="inputLogin" maxLength="2000" id="Duration" {...register("Duration", {
                                                                 required: 'Course duration is required!',
-                                                                })} placeholder="60" className='form-control' autoComplete="off" disabled={course_id && course_id >0}/>
+                                                                })} placeholder="60" className='form-control' autoComplete="off"/>
                                                             </div>
                                                             <div>Minutes</div>
                                                         </div>
