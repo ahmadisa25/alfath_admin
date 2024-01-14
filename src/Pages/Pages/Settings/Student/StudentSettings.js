@@ -82,7 +82,7 @@ const StudentSettings = () => {
             ) {
               swalWithBootstrapButtons.fire(
                 'Cancelled',
-                'Agent deletion cancelled',
+                'Student deletion cancelled',
                 'error'
               )
             }

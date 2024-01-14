@@ -1,22 +1,23 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useSelector } from 'react-redux';
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
-import Overlay from '../../../../Components/Overlay';
+import Overlay from '../../Components/Overlay';
 import {AiOutlineArrowUp} from 'react-icons/ai';
 import {
     useNavigate,useParams
 } from "react-router-dom";
-import { permissionCheck, prunePhoneNumber, urlEncodeData } from '../../../../Utils/Utils';
+import { permissionCheck, prunePhoneNumber, urlEncodeData } from '../../Utils/Utils';
 import ScrollToTop from 'react-scroll-to-top';
-import { createCourse, getCourse, updateCourse } from '../../../../Service/CourseService';
-import { getAllInstructors } from '../../../../Service/InstructorService';
+import { createAnnouncement, updateAnnouncement } from '../../Service/AnnouncementService';
 import Select from 'react-select';
+import moment from 'moment';
 
 const { $ } = window;
 
-let instructor_timer_id = -1;
-const CourseForm = () => {
+const AnnouncementForm = () => {
     let { userInfo } = useSelector(state => state.auth);
     //useEffect Entrance
     useEffect(() => {
@@ -33,23 +34,9 @@ const CourseForm = () => {
             }
         }
 
-        if(course_id){
+        if(announcement_id){
             //if(permissionCheck(userInfo, "settings", "update")){
-                getCourse(course_id).then(res => {
-                    if(res.data.Status == 200){
-                        setValue('Name', res.data.Data.Name)
-                        setValue('Description', res.data.Data.Description)
-                        setValue('Duration', res.data.Data.Duration)
-
-                        if(res.data.Data.Instructors && res.data.Data.Instructors.length > 0){
-                            const available_instructors = [...instructors];
-                            res.data.Data.Instructors.forEach(item => {
-                                available_instructors.push({label: `${item.Name} (${item.Email})`, value: item.ID}) 
-                            })
-                            setInstructors(available_instructors);
-                        }
-                    }
-                })
+            
             //} else {
                 /*Swal.fire({
                     icon: 'error',
@@ -69,67 +56,28 @@ const CourseForm = () => {
         is_instructor_focus: false
     });
 
-    const { course_id } = useParams();
+    const { announcement_id } = useParams();
     //const [agent_enabled, setAgentEnabled] = useState(false);
-    const {processing, available_instructors, is_instructor_focus} = state;
-    const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Name: '',  MobilePhone: '', Email: ""} });
-    const [instructors, setInstructors] = useState([]);
-    const [multi_select_val, setMultiSelectVal] = useState("");
+    const {processing} = state;
+    const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Title: '',  Description: ''} });
 
-    const onChangeInstructor = (val) => {
-        if (val.length >= 3) {
-            clearTimeout(instructor_timer_id);
-            instructor_timer_id = setTimeout(() => getAllInstructors({search:val}).then((res) => {
-            let result = res.data.Data;
-            const converted_data_array = [];
-            result.forEach(item => {
-                converted_data_array.push({
-                    label: `${item.name} (${item.email})`,
-                    value: item.id
-                })
-            })
-
-            console.log(converted_data_array);
-            setState({ ...state, is_instructor_focus: true, available_instructors: converted_data_array });
-            }), 500);
-        } else {
-            clearTimeout(instructor_timer_id);
-            setState({ ...state, is_instructor_focus: false, available_instructors: [] });
-        }
-    }
-
-    const onSelectInstructor = (item) => {
-        setInstructors(item);
-        setState({ ...state, is_instructor_focus: false, available_instructors: []});
-    };
+    const [Description, setDescription] = useState("");
 
     const onFormSubmit = (data) => {
-        if(!instructors || instructors.length == 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: "Please select at least 1 instructor!"
-             })
-
-             return;
-        }
-        const converted_data_array = [];
-        instructors.forEach(item => {
-            converted_data_array.push(item.value);
-        })
         setState({...state, processing:true})
-        let user_input = Object.assign({}, data, {Instructors:converted_data_array});
+        let user_input = Object.assign({}, data, {Description});
+        console.log(user_input);
         user_input.MobilePhone =  user_input.MobilePhone && user_input.MobilePhone > 0 ?  prunePhoneNumber(user_input.MobilePhone): 0;
         user_input = urlEncodeData(user_input)
-        if(!course_id){
-            createCourse(user_input).then(res => {
-                if(res.status == 201){
+        if(!announcement_id){
+            createAnnouncement(user_input).then(res => {
+                if(res.status == 200){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: "Course data has successfully been created!"
+                        text: "Announcement data has successfully been created!"
                      }).then(_ => {
-                        navigate('/courses');
+                        navigate('/announcements');
                      })
                  
                 }
@@ -144,14 +92,14 @@ const CourseForm = () => {
                  })
             })
         } else{
-            updateCourse(course_id ,user_input).then(res => {
+            updateAnnouncement(announcement_id ,user_input).then(res => {
                 if(res.data.Status == 200){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: "Course data has successfully been updated!"
+                        text: "Announcement data has successfully been updated!"
                      }).then(_ => {
-                        navigate('/courses');
+                        navigate('/announcements');
                      })
                  
                 }
@@ -195,8 +143,8 @@ const CourseForm = () => {
                                                     <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate('/courses')}>arrow_back</span>
                                                 </div>
                                                 <div>
-                                                    <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{!course_id? "Add A New": "Edit"} Course</h4>
-                                                    <h6 style={{paddingLeft: 25, color:"black"}}>{!course_id? "Configuration for the new course" : "Modify course data"}</h6>
+                                                    <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{!announcement_id? "Add A New": "Edit"} Announcement</h4>
+                                                    <h6 style={{paddingLeft: 25, color:"black"}}>{!announcement_id? "Configuration for the new announcement" : "Modify announcement data"}</h6>
                                                 </div>       
                                             </div>
                                             <div className='col-md-6'>
@@ -217,42 +165,22 @@ const CourseForm = () => {
                                                     <div className='form-group'>
                                                             <label className="bold black">Title <span style={{color:"red"}}>*</span></label>
                                                             <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                            <input {...register('Name', { required: { value: true, message: 'Title is required' } })} className='inputLogin' />
+                                                            <input {...register('Title', { required: { value: true, message: 'Title is required' } })} className='inputLogin' />
                                                             </div>
-                                                            {errors.Name && <span className='text-danger'>{errors.Name.message}</span>}
+                                                            {errors.Title && <span className='text-danger'>{errors.Title.message}</span>}
                                                     </div>
                                                     <div className='form-group'>
                                                         <label htmlFor='Description' className="black"><b>Description</b> <span style={{color:"red"}}>*</span></label>
-                                                        <textarea rows="10" className="inputLogin" maxLength="2000" id="Description" {...register("Description", {
-                                                        required: 'Course description is required!',
-                                                        })} placeholder="Type min 3 char" className='form-control' autoComplete="off"/>
+                                                        <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
+                                                                    <ReactQuill theme="snow" value={Description} onChange={setDescription} />
+                                                        </div>
                                                          {errors.Description && <span className='text-danger'>{errors.Description.message}</span>}
                                                     </div>
-                                                    <div className='form-group'>
-                                                        <label htmlFor='Instructors' className="black"><b>Instructors</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type in lowercase only</i></label>
-                                                        <Select
-                                                                            value={instructors}
-                                                                            options={available_instructors}
-                                                                            isMulti
-                                                                            onInputChange={(e) => {
-                                                                                setMultiSelectVal(e);
-                                                                                onChangeInstructor(e)
-                                                                            }}
-                                                                            onChange={(e) => onSelectInstructor(e)}
-                                                                            
-                                                        />
-                                                    </div>
                                                     <div className='form-group' style={{width:"12%"}}>
-                                                        <label htmlFor='Duration' className="black"><b>Duration</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type numbers only</i></label>
-                                                        <div className='d-flex align-items-center' style={{columnGap:"20px"}}>
-                                                            <div>
-                                                                <input type="number" className="inputLogin" maxLength="2000" id="Duration" {...register("Duration", {
-                                                                required: 'Course duration is required!',
-                                                                })} placeholder="60" className='form-control' autoComplete="off"/>
-                                                            </div>
-                                                            <div>Minutes</div>
+                                                        <label htmlFor='Created Date' className="black"><b>Created Date</b></label>
+                                                        <div>
+                                                            <div>{moment().format('DD MMM YYYY HH:mm')}</div>
                                                         </div>
-                                                        {errors.Duration && <span className='text-danger'>{errors.Duration.message}</span>}
                                                     </div>
                                                     
 
@@ -314,4 +242,4 @@ const CourseForm = () => {
     )
 }
 
-export default CourseForm;
+export default AnnouncementForm;

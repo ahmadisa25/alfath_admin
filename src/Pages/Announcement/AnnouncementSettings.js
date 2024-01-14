@@ -3,24 +3,24 @@ import {
     useNavigate
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import MTable from '../../../../Components/MTable/MTable';
+import MTable from '../../Components/MTable/MTable';
 import Swal from 'sweetalert2';
-import Overlay from '../../../../Components/Overlay';
+import Overlay from '../../Components/Overlay';
 import moment from 'moment';
 import {MdOutlineModeEdit} from 'react-icons/md';
 import {BsTrashFill} from 'react-icons/bs';
-import ActionButton from '../../../../Components/MTable/ActionButton';
+import ActionButton from '../../Components/MTable/ActionButton';
 import 'moment/locale/id';
-import { permissionCheck } from '../../../../Utils/Utils';
-import { deleteInstructor, getAllInstructors } from '../../../../Service/InstructorService';
+import { permissionCheck } from '../../Utils/Utils';
+import { deleteAnnouncement, getAllAnnouncements } from '../../Service/AnnouncementService';
 
 
 const { $ } = window;   
-const InstructorSettings = () => {
+const AnnouncementSettings = () => {
     let { userInfo } = useSelector(state => state.auth);
     moment.locale('id');
     const navigate = useNavigate();
-    const instructors_table = useRef();
+    const announcements_table = useRef();
     const [state, setState] = useState({ processing : false });
 
     const editInstructor = (instructor_id) => {
@@ -29,7 +29,7 @@ const InstructorSettings = () => {
 
     const onAddData = () => {
         //$('#modal-document').modal();
-        navigate('/instructor-form');
+        navigate('/announcement-form');
     }
 
     useEffect(() => {
@@ -53,8 +53,8 @@ const InstructorSettings = () => {
           
           swalWithBootstrapButtons.fire({
             icon: 'info',
-            title: 'Delete Instructor',
-            text: "Are you sure you want to delete this instructor?",
+            title: 'Delete Announcement',
+            text: "Are you sure you want to delete this announcement?",
             showCancelButton: true,
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel',
@@ -62,27 +62,26 @@ const InstructorSettings = () => {
           }).then((result) => {
             if (result.isConfirmed) {
                 setState({...state, processing:true});
-              deleteInstructor(id).then(res => {
+              deleteAnnouncement(id).then(res => {
                 if(res.data.Status == 200){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: "Instructor data has successfully been deleted!"
+                        text: "Announcement data has successfully been deleted!"
                      }).then(_ => {
                         setState({...state, processing:false});
-                        instructors_table.current.refresh();
+                        announcements_table.current.refresh();
                      })
                 }
               }).catch((err) => {
                 setState({...state, processing:false});
-                console.log(err);
               });
             } else if (
               result.dismiss === Swal.DismissReason.cancel
             ) {
               swalWithBootstrapButtons.fire(
                 'Cancelled',
-                'Instructor deletion cancelled',
+                'Announcement deletion cancelled',
                 'error'
               )
             }
@@ -90,12 +89,10 @@ const InstructorSettings = () => {
     };
 
     const columns = [
-        { id: 1, title: 'Name', field: 'name', sortable: true },
-        { id: 2, title: 'Email', field: 'email', sortable: true },
-        { id: 3, title: 'Mobile Phone', field: 'mobile_phone', sortable: true,
-        filter_text: "Please type in lower case: 'true' for active, 'false' for inactive",
+        { id: 1, title: 'Title', field: 'title', sortable: true },
+        { id: 3, title: 'Created At', field: 'CreatedAt', sortable: true, filterable: false,
         render: item => {
-            return <span>+62{item.mobile_phone}</span>
+            return <span>{moment(item.CreatedAt).format('DD MMM YYYY HH:mm')}</span>
         },
         }
     ];
@@ -108,8 +105,8 @@ const InstructorSettings = () => {
             render: item => {
                 return (
                     <div>
-                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editInstructor(item.id)}/>
-                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
+                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editInstructor(item.ID)}/>
+                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.ID)}/>
                     </div>
                 );
             },
@@ -127,11 +124,7 @@ const InstructorSettings = () => {
     }
 
     const tableGetData = (role_name) => {
-        return (params) => {
-            let filter = "deleted_at:null";
-            if(params.filter) filter += "," + params.filter;
-            return getAllInstructors({...params, filter});
-        }
+        return (params) => getAllAnnouncements(params);
     }
 
     const genTableColumns = (role_name) => {
@@ -146,7 +139,7 @@ const InstructorSettings = () => {
         return false;
     }
 
-    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Instructor", onAddData, order: 'Name', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
+    const propsTable = { columns: genTableColumns(userInfo.role_name), getData: tableGetData(userInfo.role_name), showIndex: false, showAddButton: showAddButton(userInfo.access), addButtonText: "Announcement", onAddData, order: 'title', direction: 'asc', showCheckbox: true, minTableWidth:getTableWidth(userInfo.role_name), stickyEnd: isStickyEnd(userInfo.role_name)};
 
     return (
         <div className="content-wrapper">
@@ -154,8 +147,8 @@ const InstructorSettings = () => {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                        <h2 className="title-breadcrum fw-500">Instructors</h2>
-                            <h6>List of Instructors</h6>
+                        <h2 className="title-breadcrum fw-500">Announcements</h2>
+                            <h6>List of Announcements</h6>
                         </div>
                         {/*<div className="col-sm-6 right">
                             <button type="button" class="btn btn-outline-dark right" style={{padding: "0.5em 1em", margin:"0 5px"}}>
@@ -180,7 +173,7 @@ const InstructorSettings = () => {
                         <div className="card-body">
                             <Overlay display={state.processing} />
                             <div>
-                                <MTable {...propsTable} ref={instructors_table} />
+                                <MTable {...propsTable} ref={announcements_table} />
                             </div>
                         </div>
                     </div>
@@ -191,4 +184,4 @@ const InstructorSettings = () => {
 
 };
 
-export default InstructorSettings;
+export default AnnouncementSettings;
