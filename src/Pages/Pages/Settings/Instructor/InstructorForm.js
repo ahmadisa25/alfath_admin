@@ -40,6 +40,13 @@ const InstructorForm = () => {
                         setValue('Name', res.data.Data.Name)
                         setValue('Email', res.data.Data.Email)
                         setValue('MobilePhone', res.data.Data.MobilePhone)
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: "Failed to get instructor data!"
+                         })
+                        navigate('/instructors');
                     }
                 })
             //} else {

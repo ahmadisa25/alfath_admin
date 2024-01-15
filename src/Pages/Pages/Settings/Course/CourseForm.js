@@ -48,6 +48,13 @@ const CourseForm = () => {
                             })
                             setInstructors(available_instructors);
                         }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: "Failed to get course data!"
+                         })
+                        navigate('/courses');
                     }
                 })
             //} else {
