@@ -11,8 +11,7 @@ import {
 } from "react-router-dom";
 import { permissionCheck, prunePhoneNumber, urlEncodeData } from '../../Utils/Utils';
 import ScrollToTop from 'react-scroll-to-top';
-import { createAnnouncement, updateAnnouncement } from '../../Service/AnnouncementService';
-import Select from 'react-select';
+import { createAnnouncement, getAnnouncement, updateAnnouncement } from '../../Service/AnnouncementService';
 import moment from 'moment';
 
 const { $ } = window;
@@ -36,7 +35,19 @@ const AnnouncementForm = () => {
 
         if(announcement_id){
             //if(permissionCheck(userInfo, "settings", "update")){
-            
+                getAnnouncement(announcement_id).then(res => {
+                    if(res.data.Status == 200){
+                        setValue('Title', res.data.Data.title)
+                        setDescription(res.data.Data.description)
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: "Failed to get announcement data!"
+                         })
+                        navigate('/announcements');
+                    }
+                })
             //} else {
                 /*Swal.fire({
                     icon: 'error',
@@ -140,7 +151,7 @@ const AnnouncementForm = () => {
                                         <div className='row'>
                                             <div className='col-md-6' style={{display:"flex"}}>
                                                 <div>
-                                                    <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate('/courses')}>arrow_back</span>
+                                                    <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate('/announcements')}>arrow_back</span>
                                                 </div>
                                                 <div>
                                                     <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{!announcement_id? "Add A New": "Edit"} Announcement</h4>

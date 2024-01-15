@@ -23,8 +23,8 @@ const AnnouncementSettings = () => {
     const announcements_table = useRef();
     const [state, setState] = useState({ processing : false });
 
-    const editInstructor = (instructor_id) => {
-        navigate(`/instructor-form/${instructor_id}`)
+    const editAnnouncement = (id) => {
+        navigate(`/announcement-form/${id}`)
     }
 
     const onAddData = () => {
@@ -105,7 +105,7 @@ const AnnouncementSettings = () => {
             render: item => {
                 return (
                     <div>
-                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editInstructor(item.ID)}/>
+                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editAnnouncement(item.ID)}/>
                             <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.ID)}/>
                     </div>
                 );
