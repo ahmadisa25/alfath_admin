@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
 import Overlay from '../../../../Components/Overlay';
 import {AiOutlineArrowUp} from 'react-icons/ai';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import {
     useNavigate,useParams
 } from "react-router-dom";
@@ -12,12 +14,14 @@ import ScrollToTop from 'react-scroll-to-top';
 import { createCourse, getCourse, updateCourse } from '../../../../Service/CourseService';
 import { getAllInstructors } from '../../../../Service/InstructorService';
 import Select from 'react-select';
+import WysiwygText from '../../../../Components/WysiwygText';
 
 const { $ } = window;
 
 let instructor_timer_id = -1;
 const CourseForm = () => {
     let { userInfo } = useSelector(state => state.auth);
+    const description_ref = useRef(null);
     //useEffect Entrance
     useEffect(() => {
         if(userInfo.access){
@@ -38,7 +42,8 @@ const CourseForm = () => {
                 getCourse(course_id).then(res => {
                     if(res.data.Status == 200){
                         setValue('Name', res.data.Data.Name)
-                        setValue('Description', res.data.Data.Description)
+                        description_ref.current.setText(res.data.Data.Description)
+                        //setDescription(res.data.Data.Description)
                         setValue('Duration', res.data.Data.Duration)
 
                         if(res.data.Data.Instructors && res.data.Data.Instructors.length > 0){
@@ -125,7 +130,7 @@ const CourseForm = () => {
             converted_data_array.push(item.value);
         })
         setState({...state, processing:true})
-        let user_input = Object.assign({}, data, {Instructors:converted_data_array});
+        let user_input = Object.assign({}, data, {Instructors:converted_data_array}, {Description: description_ref.current.getValue()});
         user_input.MobilePhone =  user_input.MobilePhone && user_input.MobilePhone > 0 ?  prunePhoneNumber(user_input.MobilePhone): 0;
         user_input = urlEncodeData(user_input)
         if(!course_id){
@@ -228,13 +233,7 @@ const CourseForm = () => {
                                                             </div>
                                                             {errors.Name && <span className='text-danger'>{errors.Name.message}</span>}
                                                     </div>
-                                                    <div className='form-group'>
-                                                        <label htmlFor='Description' className="black"><b>Description</b> <span style={{color:"red"}}>*</span></label>
-                                                        <textarea rows="10" className="inputLogin" maxLength="2000" id="Description" {...register("Description", {
-                                                        required: 'Course description is required!',
-                                                        })} placeholder="Type min 3 char" className='form-control' autoComplete="off"/>
-                                                         {errors.Description && <span className='text-danger'>{errors.Description.message}</span>}
-                                                    </div>
+                                                    <WysiwygText label={"Description"} required={true} ref={description_ref}/>
                                                     <div className='form-group'>
                                                         <label htmlFor='Instructors' className="black"><b>Instructors</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type in lowercase only</i></label>
                                                         <Select

@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useSelector } from 'react-redux';
-import ReactQuill, { Quill } from 'react-quill';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
