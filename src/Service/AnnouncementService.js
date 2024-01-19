@@ -7,7 +7,9 @@ const getAllAnnouncements = (params, onSuccess, onError) => {
 };
 
 const createAnnouncement = (params, onSuccess, onError) => {
-    const response = axios.post('/announcement/', params);
+    const response = axios.post('/announcement/', params, {
+        "Content-Type": "multipart/form-data"
+    });
     return handleResponse(response, onSuccess, onError);
 };
 
