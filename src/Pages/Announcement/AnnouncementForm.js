@@ -18,6 +18,7 @@ const { $ } = window;
 
 const AnnouncementForm = () => {
     let { userInfo } = useSelector(state => state.auth);
+    const UPLOAD_DIR = process.env.REACT_APP_IMAGE_URL;
     //useEffect Entrance
     useEffect(() => {
         if(userInfo.access){
@@ -37,8 +38,12 @@ const AnnouncementForm = () => {
             //if(permissionCheck(userInfo, "settings", "update")){
                 getAnnouncement(announcement_id).then(res => {
                     if(res.data.Status == 200){
-                        setValue('Title', res.data.Data.title)
-                        setDescription(res.data.Data.description)
+                        let {title, description,FileUrl} = res.data.Data;
+                        setValue('Title', title)
+                        setDescription(description)
+                        setPhotoUpload({
+                            img_upload: `${UPLOAD_DIR}${FileUrl}    `
+                        })
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -186,6 +191,10 @@ const AnnouncementForm = () => {
             })
         }
     }
+
+    useEffect(() => {
+        console.log(photo_upload)
+    }, [photo_upload])
     
     return(
         <div className="content-wrapper" style={{height:"120vh"}}>
@@ -250,15 +259,12 @@ const AnnouncementForm = () => {
                                                     <div className="form-group">
                                                         <label className="bold black">Announcement Image</label>
                                                         <div>
-                                                            {/*!photo_upload.img_upload && (!userInfo.profpic) && <div style={{display:"flex", justifyContent:"center", marginBottom:"30px"}}>
-                                                                <InitialIcon name={userInfo.fullname}></InitialIcon>
-                                                             </div>*/}
-                                                            {(photo_upload.img_upload || userInfo.profpic) && <img className="img-account-profile rounded-circle mb-2" src={photo_upload.img_upload || userInfo.profpic} alt="" />}
-                                                            <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 1 MB</div>
-                                                            <button className="btn b2b-btn-add" type="button" onClick={()=> $('#profpic-upload').click()}>
+                                                            {(photo_upload.img_upload) && <img className="img-account-profile rounded-circle mb-2" src={photo_upload.img_upload} alt="" />}
+                                                            {(!photo_upload?.img_upload) &&<div className="small font-italic text-muted mb-4">JPG or PNG no larger than 1 MB</div>}
+                                                            <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
                                                                     Upload a new image
                                                             </button>
-                                                            <input id="profpic-upload" type="file" accept="image/png, image/jpg, image/jpeg" className='d-none'  onChange={(e) =>onImageChange(e)} required/>
+                                                            <input id="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg" className='d-none'  onChange={(e) =>onImageChange(e)} required/>
                                                         </div>
                                                     </div>
                                                     <div className='form-group' style={{width:"12%"}}>
