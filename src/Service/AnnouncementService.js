@@ -24,7 +24,9 @@ const getAnnouncement = (id, onSuccess, onError) => {
 };
 
 const updateAnnouncement = (id, params, onSuccess, onError) => {
-    const response = axios.put(`/announcement/${id}`, params);
+    const response = axios.put(`/announcement/${id}`, params,  {
+        "Content-Type": "multipart/form-data"
+    });
     return handleResponse(response, onSuccess, onError);
 };
 

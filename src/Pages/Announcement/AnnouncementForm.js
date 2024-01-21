@@ -101,30 +101,6 @@ const AnnouncementForm = () => {
                 photo_obj.File = file;
                 photo_obj.img_upload = URL.createObjectURL(file);
                 setPhotoUpload(photo_obj);
-                const formData = new FormData();
-            formData.append("File", file);
-                formData.append("img_upload", photo_obj.img_upload);
-                /*uploadProfilePhoto(formData).then(res => {
-                    if(res.status == 200){
-                        Swal.fire({
-                            icon: 'success',
-                            title: "File upload success!"
-                        }).then(() => {
-                           dispatch(updateImage(res.data.data.image_url));
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: "File upload error. Please recheck your file type or file size!"
-                        }); 
-                    }
-                }).catch(err => {
-                    console.log(err);
-                    Swal.fire({
-                        icon: 'error',
-                        title: "File upload error"
-                    }); 
-                });*/
             } else{
                 Swal.fire({
                     icon: 'error',
@@ -138,10 +114,7 @@ const AnnouncementForm = () => {
     const onFormSubmit = (data) => {
         setState({...state, processing:true})
         let user_input = Object.assign({}, data, {Description}, {file:photo_upload.File});
-        user_input.MobilePhone =  user_input.MobilePhone && user_input.MobilePhone > 0 ?  prunePhoneNumber(user_input.MobilePhone): 0;
-        //user_input = urlEncodeData(user_input)
         let formData = new FormData();
-        console.log(Object.keys(user_input))
         Object.keys(user_input).forEach(item => {
             formData.append(item, user_input[item])
         })
@@ -168,7 +141,7 @@ const AnnouncementForm = () => {
                  })
             })
         } else{
-            updateAnnouncement(announcement_id ,user_input).then(res => {
+            updateAnnouncement(announcement_id ,formData).then(res => {
                 if(res.data.Status == 200){
                     Swal.fire({
                         icon: 'success',
@@ -191,10 +164,6 @@ const AnnouncementForm = () => {
             })
         }
     }
-
-    useEffect(() => {
-        console.log(photo_upload)
-    }, [photo_upload])
     
     return(
         <div className="content-wrapper" style={{height:"120vh"}}>
@@ -259,8 +228,10 @@ const AnnouncementForm = () => {
                                                     <div className="form-group">
                                                         <label className="bold black">Announcement Image</label>
                                                         <div>
-                                                            {(photo_upload.img_upload) && <img className="img-account-profile rounded-circle mb-2" src={photo_upload.img_upload} alt="" />}
-                                                            {(!photo_upload?.img_upload) &&<div className="small font-italic text-muted mb-4">JPG or PNG no larger than 1 MB</div>}
+                                                            {(photo_upload.img_upload) && <div>
+                                                                <img className="img-account-profile mb-2" src={photo_upload.img_upload} alt="" style={{width:"10%"}} />
+                                                            </div>}
+                                                            {(!photo_upload?.img_upload) &&<div className="small font-italic text-muted mb-2">JPG, JPEG or PNG not larger than 1 MB</div>}
                                                             <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
                                                                     Upload a new image
                                                             </button>

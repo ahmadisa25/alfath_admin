@@ -6,7 +6,7 @@ const PagingInfo = ({ paginator, onPageChange, totalPage, onPerPageChange }) => 
     return (
         <div className="" style={{}}>
             <div style={{display: "flex", alignItems: "center", columnGap: "5px"}}>
-                <div style={{display:"flex", flexDirection:"column"}}>
+                <div style={{display:"flex", flexDirection:"column", marginTop:"5px"}}>
                     <div className='black' id="go-to-page" style={{textAlign:"center"}}>
                         GO TO PAGE
                     </div>
@@ -16,10 +16,10 @@ const PagingInfo = ({ paginator, onPageChange, totalPage, onPerPageChange }) => 
                     </div>
                     
                 </div>
-                <div style={{display: "flex", alignItems: "center", columnGap: "5px"}}>
+                <div style={{display: "flex", alignItems: "center", columnGap: "5px", marginTop:"5px"}}>
                     <div style={{display:"flex", flexDirection:"column"}}>
                         <div className='black' id="go-to-page" style={{textAlign:"center"}}>
-                            SHOW / PAGE
+                            SHOW PER PAGE
                         </div>
                         <div>
                             <select value={paginator.perpage} onChange={onPerPageChange} style={{ fontSize: "12px" }} className="form-control">
