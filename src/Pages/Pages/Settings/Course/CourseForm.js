@@ -109,8 +109,6 @@ const CourseForm = () => {
                 return;
             } 
             if(file.size <=1000000){
-                //listPayment.img_upload = URL.createObjectURL(file);
-                //listPayment.File = file;
                 let photo_obj = {};
                 photo_obj.File = file;
                 photo_obj.img_upload = URL.createObjectURL(file);
@@ -162,17 +160,29 @@ const CourseForm = () => {
 
              return;
         }
+        if(photo_upload && !photo_upload.img_upload){
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "Please upload course image!"
+             }).then(_ => {
+                setState({...state, processing: false})
+             })
+
+             return;
+        }
         const converted_data_array = [];
         instructors.forEach(item => {
             converted_data_array.push(item.value);
         })
         setState({...state, processing:true})
-        let user_input = Object.assign({}, data, {Instructors:converted_data_array}, {Description: description_ref.current.getValue()}, {file:photo_upload.File});
+        let user_input = Object.assign({}, data, {Instructors:converted_data_array}, {Description: description_ref.current.getValue()});
         let formData = new FormData();
         Object.keys(user_input).forEach(item => {
             formData.append(item, user_input[item])
         })
         if(!course_id){
+            formData.append("file", photo_upload.File);
             createCourse(formData).then(res => {
                 if(res.status == 201){
                     Swal.fire({
@@ -189,12 +199,15 @@ const CourseForm = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: data.Message || "There's an error with your request. Please try again or contact support!"
+                    text: data && data.Message || "There's an error with your request. Please try again or contact support!"
                  }).then(_ => {
                     setState({...state, processing: false})
                  })
             })
         } else{
+            if(photo_upload && photo_upload.File){
+                formData.append("file", photo_upload.File);
+            }
             updateCourse(course_id ,formData).then(res => {
                 if(res.data.Status == 200){
                     Swal.fire({
@@ -300,7 +313,7 @@ const CourseForm = () => {
                                                         {errors.Duration && <span className='text-danger'>{errors.Duration.message}</span>}
                                                     </div>
                                                     <div className="form-group">
-                                                        <label className="bold black">Course Thumbnail Image</label>
+                                                        <label className="bold black">Course Image</label>
                                                         <div>
                                                             {(photo_upload.img_upload) && <div>
                                                                 <img className="img-account-profile mb-2" src={photo_upload.img_upload} alt="" style={{width:"10%"}} />
@@ -309,7 +322,7 @@ const CourseForm = () => {
                                                             <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
                                                                     Upload a new image
                                                             </button>
-                                                            <input id="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg" className='d-none'  onChange={(e) =>onImageChange(e)} required/>
+                                                            <input id="picture-upload" name="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg" class='d-none'  onChange={(e) =>onImageChange(e)}/>
                                                         </div>
                                                     </div>
                                                     

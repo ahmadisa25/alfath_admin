@@ -112,6 +112,17 @@ const AnnouncementForm = () => {
     }
 
     const onFormSubmit = (data) => {
+        if(photo_upload && !photo_upload.img_upload){
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "Please upload announcement image!"
+             }).then(_ => {
+                setState({...state, processing: false})
+             })
+
+             return;
+        }
         setState({...state, processing:true})
         let user_input = Object.assign({}, data, {Description}, {file:photo_upload.File});
         let formData = new FormData();
@@ -226,7 +237,7 @@ const AnnouncementForm = () => {
                                                          {errors.Description && <span className='text-danger'>{errors.Description.message}</span>}
                                                     </div>
                                                     <div className="form-group">
-                                                        <label className="bold black">Announcement Image</label>
+                                                        <label className="bold black">Announcement Image<span style={{color:"red"}}>*</span></label>
                                                         <div>
                                                             {(photo_upload.img_upload) && <div>
                                                                 <img className="img-account-profile mb-2" src={photo_upload.img_upload} alt="" style={{width:"10%"}} />
@@ -235,7 +246,7 @@ const AnnouncementForm = () => {
                                                             <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
                                                                     Upload a new image
                                                             </button>
-                                                            <input id="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg" className='d-none'  onChange={(e) =>onImageChange(e)} required/>
+                                                            <input id="picture-upload" name="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg" className='d-none'  onChange={(e) =>onImageChange(e)}/>
                                                         </div>
                                                     </div>
                                                     <div className='form-group' style={{width:"12%"}}>
