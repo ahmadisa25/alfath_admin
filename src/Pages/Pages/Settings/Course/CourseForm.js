@@ -88,7 +88,7 @@ const CourseForm = () => {
     const { course_id } = useParams();
     //const [agent_enabled, setAgentEnabled] = useState(false);
     const {processing, available_instructors, is_instructor_focus} = state;
-    const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Name: '',  MobilePhone: '', Email: ""} });
+    const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Name: ''} });
     const [instructors, setInstructors] = useState([]);
     const [multi_select_val, setMultiSelectVal] = useState("");
 
