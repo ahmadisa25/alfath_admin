@@ -22,6 +22,7 @@ let instructor_timer_id = -1;
 const CourseForm = () => {
     let { userInfo } = useSelector(state => state.auth);
     const description_ref = useRef(null);
+    const UPLOAD_DIR = process.env.REACT_APP_IMAGE_URL;
     //useEffect Entrance
     useEffect(() => {
         if(userInfo.access){
@@ -43,6 +44,9 @@ const CourseForm = () => {
                     if(res.data.Status == 200){
                         setValue('Name', res.data.Data.Name)
                         description_ref.current.setText(res.data.Data.Description)
+                        setPhotoUpload({
+                            img_upload: `${UPLOAD_DIR}${res.data.Data.FileUrl}   `
+                        })
                         //setDescription(res.data.Data.Description)
                         setValue('Duration', res.data.Data.Duration)
 
@@ -88,6 +92,39 @@ const CourseForm = () => {
     const [instructors, setInstructors] = useState([]);
     const [multi_select_val, setMultiSelectVal] = useState("");
 
+    const [photo_upload, setPhotoUpload] = useState({
+        img_upload:"",
+        File:""
+    });
+
+    const onImageChange = (e) => {
+        const [file] = e.target.files;
+        
+        if (file) {
+            if((file.type !== "image/png" && file.type !== "image/jpeg" && file.type !== "image/jpg")){
+                Swal.fire({
+                    icon: 'error',
+                    title: "That file extension is not allowed (only .png, .jpeg, or .jpg)"
+                });
+                return;
+            } 
+            if(file.size <=1000000){
+                //listPayment.img_upload = URL.createObjectURL(file);
+                //listPayment.File = file;
+                let photo_obj = {};
+                photo_obj.File = file;
+                photo_obj.img_upload = URL.createObjectURL(file);
+                setPhotoUpload(photo_obj);
+            } else{
+                Swal.fire({
+                    icon: 'error',
+                    title: "The image size is too large"
+                });
+            }
+
+        }
+    }
+
     const onChangeInstructor = (val) => {
         if (val.length >= 3) {
             clearTimeout(instructor_timer_id);
@@ -130,11 +167,13 @@ const CourseForm = () => {
             converted_data_array.push(item.value);
         })
         setState({...state, processing:true})
-        let user_input = Object.assign({}, data, {Instructors:converted_data_array}, {Description: description_ref.current.getValue()});
-        user_input.MobilePhone =  user_input.MobilePhone && user_input.MobilePhone > 0 ?  prunePhoneNumber(user_input.MobilePhone): 0;
-        user_input = urlEncodeData(user_input)
+        let user_input = Object.assign({}, data, {Instructors:converted_data_array}, {Description: description_ref.current.getValue()}, {file:photo_upload.File});
+        let formData = new FormData();
+        Object.keys(user_input).forEach(item => {
+            formData.append(item, user_input[item])
+        })
         if(!course_id){
-            createCourse(user_input).then(res => {
+            createCourse(formData).then(res => {
                 if(res.status == 201){
                     Swal.fire({
                         icon: 'success',
@@ -156,7 +195,7 @@ const CourseForm = () => {
                  })
             })
         } else{
-            updateCourse(course_id ,user_input).then(res => {
+            updateCourse(course_id ,formData).then(res => {
                 if(res.data.Status == 200){
                     Swal.fire({
                         icon: 'success',
@@ -259,6 +298,19 @@ const CourseForm = () => {
                                                             <div>Minutes</div>
                                                         </div>
                                                         {errors.Duration && <span className='text-danger'>{errors.Duration.message}</span>}
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label className="bold black">Course Thumbnail Image</label>
+                                                        <div>
+                                                            {(photo_upload.img_upload) && <div>
+                                                                <img className="img-account-profile mb-2" src={photo_upload.img_upload} alt="" style={{width:"10%"}} />
+                                                            </div>}
+                                                            {(!photo_upload?.img_upload) &&<div className="small font-italic text-muted mb-2">JPG, JPEG or PNG not larger than 1 MB</div>}
+                                                            <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
+                                                                    Upload a new image
+                                                            </button>
+                                                            <input id="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg" className='d-none'  onChange={(e) =>onImageChange(e)} required/>
+                                                        </div>
                                                     </div>
                                                     
 

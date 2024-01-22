@@ -7,7 +7,9 @@ const getAllCourses = (params, onSuccess, onError) => {
 };
 
 const createCourse = (params, onSuccess, onError) => {
-    const response = axios.post('/course/', params);
+    const response = axios.post('/course/', params,{
+        "Content-Type": "multipart/form-data"
+    });
     return handleResponse(response, onSuccess, onError);
 };
 
@@ -22,7 +24,9 @@ const getCourse = (id, onSuccess, onError) => {
 };
 
 const updateCourse = (id, params, onSuccess, onError) => {
-    const response = axios.put(`/course/${id}`, params);
+    const response = axios.put(`/course/${id}`, params, {
+        "Content-Type": "multipart/form-data"
+    });
     return handleResponse(response, onSuccess, onError);
 };
 
