@@ -1,7 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import { getRoleById, loginUser, loginSSO } from "../../Service/UserService";
-import { useNavigate } from "react-router-dom";
+import { urlEncodeData } from "../../Utils/Utils";
 
 const ACTION_LOGIN = 'ACTION_LOGIN';
 const ACTION_LOGOUT = 'ACTION_LOGOUT';
@@ -77,26 +77,25 @@ const authSSO = (navigate, payload, onError = err => { }) => dispatch => {
 }
 
 const login = (navigate, payload, onError = err => { }) => dispatch => {
-  loginUser(payload, async res => {
-    const {
-      access_token,
-      refresh_token
-    } = res.data;
+  loginUser(urlEncodeData(payload), async res => {
+    const access_token = res.data.Token;
+    const refresh_token = res.data.Refresh;
+
+    console.log(access_token);
 
     const [header, payload] = access_token.split('.');
     const userInfo = JSON.parse(atob(payload));
     userInfo.profpic = process.env.REACT_APP_IMAGE_URL +"profpic/" +`${userInfo.profpic}`;
-    //localStorage.setItem('prev_role', userInfo.role_name);
     localStorage.setItem('access_token', access_token);
     localStorage.setItem('refresh_token', refresh_token);
     localStorage.removeItem('image_name');
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-    if (userInfo.role_id) {
+    /*if (userInfo.role_id) {
       const response = await getRoleById(userInfo.role_id);
       //const { privileges } = response.data;
       //userInfo.privileges = privileges;
-    }
+    }*/
     Swal.fire({
       icon: 'success',
       title: 'Login Success!',

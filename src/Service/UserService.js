@@ -13,7 +13,7 @@ const uploadProfilePhoto = (payload, onSuccess, onError) => {
 
 
 const loginUser = (payload, onSuccess, onError) => {
-    const response = axios.post("v1/login", payload);
+    const response = axios.post("/login/", payload);
     return handleResponse(response, onSuccess, onError);
 }
 
