@@ -78,10 +78,9 @@ const authSSO = (navigate, payload, onError = err => { }) => dispatch => {
 
 const login = (navigate, payload, onError = err => { }) => dispatch => {
   loginUser(urlEncodeData(payload), async res => {
+    console.log(res.data);
     const access_token = res.data.Token;
-    const refresh_token = res.data.Refresh;
-
-    console.log(access_token);
+    const refresh_token = res.data.RefreshToken;
 
     const [header, payload] = access_token.split('.');
     const userInfo = JSON.parse(atob(payload));

@@ -9,12 +9,12 @@ import { ACTION_LOGIN, ACTION_LOGOUT } from './Redux/Action/AuthAction';
 import { getRoleById } from './Service/UserService';
 
 const { $ } = window;
-const REFRESH_URL = 'v1/refresh';
-const LOGIN_URL = 'v1/login';
+const REFRESH_URL = '/refresh/';
+const LOGIN_URL = '/login/';
 const USERTOKEN = {
-  set: (access_token, resfresh_token) => {
+  set: (access_token, refresh_token) => {
     localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', resfresh_token);
+    localStorage.setItem('refresh_token', refresh_token);
   },
   remove: () => {
     localStorage.removeItem('access_token');
@@ -45,12 +45,13 @@ axios.interceptors.response.use(ok200 => ok200, (error) => {
       axios.post(REFRESH_URL, { refreshToken }).then(async response => {
         if (response && response.status == 200) {
           isRefreshing = false;
-          const { access_token, refresh_token } = response.data;
+          const access_token = response.data.Token;
+          const refresh_token = response.data.RefreshToken;
           const [header, payload] = access_token.split('.');
           const userInfo = JSON.parse(atob(payload));
-          const profpic_base_url = process.env.REACT_APP_IMAGE_URL +"profpic/";
-          const tempImageName = localStorage.getItem('image_name') || `${profpic_base_url}${userInfo.profpic}`;
-          userInfo.profpic = tempImageName;
+          //const profpic_base_url = process.env.REACT_APP_IMAGE_URL +"profpic/";
+          //onst tempImageName = localStorage.getItem('image_name') || `${profpic_base_url}${userInfo.profpic}`;
+          //userInfo.profpic = tempImageName;
           axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
           USERTOKEN.set(access_token, refresh_token);
 
