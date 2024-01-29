@@ -7,6 +7,7 @@ import store from './Redux/Store/Store';
 import axios from 'axios';
 import { ACTION_LOGIN, ACTION_LOGOUT } from './Redux/Action/AuthAction';
 import { getRoleById } from './Service/UserService';
+import { urlEncodeData } from './Utils/Utils';
 
 const { $ } = window;
 const REFRESH_URL = '/refresh/';
@@ -41,8 +42,9 @@ axios.interceptors.response.use(ok200 => ok200, (error) => {
 
     if (isRefreshing == false) {
       isRefreshing = true;
-      const refreshToken = USERTOKEN.get().refresh_token;
-      axios.post(REFRESH_URL, { refreshToken }).then(async response => {
+      const RefreshToken = USERTOKEN.get().refresh_token;
+      axios.post(REFRESH_URL, urlEncodeData({RefreshToken:RefreshToken })).then(async response => {
+        console.log(response);
         if (response && response.status == 200) {
           isRefreshing = false;
           const access_token = response.data.Token;
