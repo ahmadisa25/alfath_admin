@@ -3,11 +3,12 @@ import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import { useSelector } from 'react-redux';
 import styles from "./StyleModules/sidenav.module.css"
 import { NavLink, useLocation } from "react-router-dom";
-import { modena_logo, caret_up, caret_down} from "../Images";
+import { caret_up, caret_down} from "../Images";
 import { permissionCheck } from "../Utils/Utils";
 
 /*modified from a code made by Mary Gathoni*/
 const Sidenav =  forwardRef(({layoutAdjust}, ref) => {
+    console.log(navData)
     useImperativeHandle(ref, () => {
         return { closeAfters: () => setafteropen({}) }
     })
@@ -61,10 +62,10 @@ const Sidenav =  forwardRef(({layoutAdjust}, ref) => {
     
     const menuStyleReturn = (currentPath, item_link) => {
         if(item_link == "/"){
-            if(currentPath == "/") return {background: "#FAA819", color:"white", borderTopLeftRadius:8,borderBottomLeftRadius:8}
+            if(currentPath == "/") return {background: "#CD5700", color:"white", borderTopLeftRadius:8,borderBottomLeftRadius:8}
             else return {}
         } else{
-            if(currentPath.includes(item_link)) return {background: "#FAA819", color:"white", borderTopLeftRadius:8,borderBottomLeftRadius:8}
+            if(currentPath.includes(item_link)) return {background: "#CD5700", color:"white", borderTopLeftRadius:8,borderBottomLeftRadius:8}
             else return {}
         }
     }
@@ -72,16 +73,10 @@ const Sidenav =  forwardRef(({layoutAdjust}, ref) => {
     return (
         <div style={{position: "fixed", zIndex: 1, top: 0, left: 0, height:"100vh"}} className='sidenavparent'>
             <div className={show? styles.sidenavHover: styles.sidenav}>
-                {/*<div style={{marginLeft: "19px"}}>
-                        <div style={{display: "flex"}}>
-                        <div><img src={modena_logo} style={{width: "20px", height: "20px"}}/></div>
-                        <div style={{paddingTop:"5px"}}>{show && <h6 style={{position:"relative", marginBottom: "2em", marginLeft:"10px"}}>Servicedesk</h6>}</div>
-                    </div> 
-                    <div style={{position:"relative", marginBottom: "2em"}}>{show && <h6 className="bold">Menu</h6>}</div>
-                </div>*/}
+
                 {navData.map((item, index) => 
-                    <div className='sidebar-placeholder' style={!permissionCheck(userInfo, item.permission, "view") ? {display:"none"}:{}}>
-                        {permissionCheck(userInfo, item.permission, "view") && !item.child && 
+                    <div className='sidebar-placeholder' style={/*!permissionCheck(userInfo, item.permission, "view") ? {display:"none"}:*/{}}>
+                        {/*permissionCheck(userInfo, item.permission, "view") &&*/ !item.child && 
                             <NavLink key={item.id} className={styles.sideitem} to={item.link} style={menuStyleReturn(currentPath, item.link)}>
                                     <div style={{display:"block", fontSize:"1.2rem"}}>{item.icon}</div>
                                     <div style={show? {display: "block"}: {display: "none"}}>
@@ -89,7 +84,7 @@ const Sidenav =  forwardRef(({layoutAdjust}, ref) => {
                                     </div>
                             </NavLink>
                         }
-                        {permissionCheck(userInfo, item.permission, "view") && item.child && item.child.length > 0 &&
+                        {/*permissionCheck(userInfo, item.permission, "view") &&*/ item.child && item.child.length > 0 &&
                         <>
                             <div className={styles.sideitem} style={{position: "relative"}} onClick={() => {
                                     if(show) toggleChildOpen(index)
@@ -116,7 +111,7 @@ const Sidenav =  forwardRef(({layoutAdjust}, ref) => {
                                 
                             </div>
                                 {item.child.map(anak =>
-                                    <NavLink key={anak.id} className={child_open[index] === true? "sideitem-child " + styles.sideitemChild: "sideitem-child " + styles.sideitemChildClosed} to={anak.link} style={currentPath.includes(anak.link)? {background: "#FAA819", color:"white", borderTopLeftRadius:8,borderBottomLeftRadius:8}: {}}>
+                                    <NavLink key={anak.id} className={child_open[index] === true? "sideitem-child " + styles.sideitemChild: "sideitem-child " + styles.sideitemChildClosed} to={anak.link} style={currentPath.includes(anak.link)? {background: "#CD5700", color:"white", borderTopLeftRadius:8,borderBottomLeftRadius:8}: {}}>
                                         {anak.icon? anak.icon: undefined}
                                         <span className={show? styles.linkText: styles.linkTextHidden} style={show? {display: "inline"}: {display:"none"}}>{anak.text}</span>
                                     </NavLink>
