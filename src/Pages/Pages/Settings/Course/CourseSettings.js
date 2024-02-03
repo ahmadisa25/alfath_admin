@@ -11,6 +11,7 @@ import {MdOutlineModeEdit} from 'react-icons/md';
 import {BsTrashFill} from 'react-icons/bs';
 import ActionButton from '../../../../Components/MTable/ActionButton';
 import 'moment/locale/id';
+import {FaEye} from 'react-icons/fa';
 import { permissionCheck } from '../../../../Utils/Utils';
 import { deleteCourse, getAllCourses } from '../../../../Service/CourseService';
 
@@ -89,8 +90,8 @@ const CourseSettings = () => {
     };
 
     const columns = [
-        { id: 1, title: 'Title', field: 'name', sortable: true },
-        { id: 3, title: 'Duration', field: 'duration', sortable: true,
+        { id: 1, title: 'Title', field: 'name', sortable: true, style:{width:300}},
+        { id: 3, title: 'Duration', field: 'duration', style:{width:200}, sortable: true,
         filter_text: "Please type in lower case: 'true' for active, 'false' for inactive",
         render: item => {
             return <span>{item.duration} Minutes</span>
@@ -98,16 +99,16 @@ const CourseSettings = () => {
         }
     ];
 
-    //if(permissionCheck(userInfo, "settings", "delete") && permissionCheck(userInfo, "settings", "update")){
         columns.push({
             id: 2,
             title: 'Action',
-            style:{width:100},
+            style:{width:50},
             render: item => {
                 return (
                     <div>
                             <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editCourse(item.id)}/>
                             <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
+                            <ActionButton icon={<FaEye/>} link_color="#0099C3" click_action={() => navigate(`/course/${item.id}`)} text="View"/>
                     </div>
                 );
             },
@@ -115,12 +116,6 @@ const CourseSettings = () => {
     //}
 
     const showAddButton = (access) => {
-        /*if(access){
-            if(access.settings){
-                if(access.settings.can_view) return true;
-            }
-        }
-        return false;*/
         return true;
     }
 
