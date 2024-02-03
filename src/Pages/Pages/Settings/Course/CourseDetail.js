@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { getCourse } from '../../../../Service/CourseService';
+import CourseContents from './CourseContents';
 
 const { $ } = window;
 const CourseDetail = () => {
@@ -41,7 +42,7 @@ const CourseDetail = () => {
 
                 getCourse(course_id).then(res => {
                         if(res.data.Status == 200){
-                            console.log(res.data.Data)
+                            console.log(res.data.Data.Instructors)
                             setCourseData(res.data.Data)
                         } else {
                             Swal.fire({
@@ -66,7 +67,7 @@ const CourseDetail = () => {
             <section className="content">
 
                 <div className="container-fluid">
-                    <div className="card shadow mb-4">
+                    <div className="card shadow mb-4" style={{height:"85vh"}}>
                         <div className='card-header po-card-header' style={{borderBottom:"none"}}>
                             <div className="container-fluid">
                         <div className="row mb-2">
@@ -77,8 +78,8 @@ const CourseDetail = () => {
                                 </div>
                                 <div style={{display: "flex", columnGap: "20px"}}>
                                     <div>
-                                        <span className="course-title fw-500 black" style={{display: "block"}}>Syarah Kitaabut Tauhid</span>
-                                        <span className="course-date" style={{display: "block"}}>Created Date: {moment().format('ll')}</span>
+                                        <span className="course-title fw-500 black" style={{display: "block"}}>{course_data.Name}</span>
+                                        <span className="course-date" style={{display: "block"}}>Created Date: {moment(course_data.CreatedAt).format('ll')}</span>
                                     </div>
                                     <div>
                                     </div>
@@ -110,7 +111,7 @@ const CourseDetail = () => {
                                             <div style={{fontSize: "18px", paddingTop:"10px", width: "95%"}}>
                                                 <div className="row">
                                                     <div className="col-md-6">
-                                                        <div className="ticket-detail" style={{display:"flex", flexDirection:"column", rowGap:"10px"}}>
+                                                        <div className="ticket-detail" style={{display:"flex", flexDirection:"column", rowGap:"10px", marginBottom:"1.2rem"}}>
                                                             <div className="bold black">Title:</div>
                                                             <div>{course_data.Name}</div>
                                                         </div>
@@ -118,16 +119,27 @@ const CourseDetail = () => {
                                                             <div className="bold black">Description:</div>
                                                             <div>{ReactHtmlParser(course_data.Description)}</div>
                                                         </div>
-                                                        <div className="ticket-detail" style={{display:"flex", flexDirection:"column", rowGap:"10px"}}>
+                                                        <div className="ticket-detail" style={{display:"flex", flexDirection:"column", rowGap:"10px", marginBottom:"1.2rem"}}>
                                                             <div className="bold black">Duration:</div>
                                                             <div>{course_data.Duration} Minutes</div>
+                                                        </div>
+                                                        <div className="ticket-detail" style={{display:"flex", flexDirection:"column", rowGap:"10px"}}>
+                                                            <div className="bold black">Instructors:</div>
+                                                            <div>
+                                                                <ul>
+                                                                    {course_data?.Instructors?.length > 0 && course_data.Instructors.map((item, i) => {
+                                                                        return <li key={i}>{item.Name}</li>
+                                                                    })}
+                                                                     
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6">
                                                         <div className="ticket-detail" style={{display:"flex", flexDirection:"column", rowGap:"5px"}}>
                                                             <div className="bold black">Course Thumbnail:</div>
                                                             <div>
-                                                                <img src={`${UPLOAD_DIR}${course_data.FileUrl}`} width={"70%"}/>
+                                                                <img src={`${UPLOAD_DIR}${course_data.FileUrl}`} width={"80%"}/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -144,6 +156,9 @@ const CourseDetail = () => {
                                         </div>
                                     </div>
                                 </>
+                            }
+                            {current_page === "Lessons" &&
+                                <CourseContents/>
                             }
                         </div>
                     </div>
