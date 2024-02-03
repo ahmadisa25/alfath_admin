@@ -106,9 +106,8 @@ const CourseSettings = () => {
             render: item => {
                 return (
                     <div>
-                            <ActionButton icon={<MdOutlineModeEdit/>} link_color="#0099C3" click_action={(e) => editCourse(item.id)}/>
-                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
                             <ActionButton icon={<FaEye/>} link_color="#0099C3" click_action={() => navigate(`/course/${item.id}`)} text="View"/>
+                            <ActionButton icon={<BsTrashFill/>} link_color="#FF4833" click_action={(e) => onRemove(item.id)}/>
                     </div>
                 );
             },

@@ -876,9 +876,13 @@ a.disabled {
     font-size: 20px
 }
 
-.soda-bg {
-    background-color: #fbb034;
-    background-image: linear-gradient(135deg, #faa819 20%, #FAB719 80%); 
+
+.course-title{
+    font-size: 1.5rem;
+}
+
+.course-date{
+    font-size: 0.8rem;
 }
 
 .modena-orange{
@@ -889,101 +893,6 @@ a.disabled {
     color: #FAA819;
     margin-left: auto;
 }
-
-#steps-explain li{
-    display: inline-block;
-    margin: 0 18px;
-}
-
-#steps-dots li {
-    display: inline-block;
-    font-size: 20px;
-    margin: 0 40px;
-    position: relative;
-    width:40px;
-    height:40px;
-    border-radius:250px;
-    border: 2px solid #cecece;
-    text-align:center;
-    /* background: linear-gradient(79.88deg, #32AE1E 19.62%, #1E8D91 70.68%); */
-    background-color: white;
-    color:linear-gradient(79.88deg, #32AE1E 19.62%, #1E8D91 70.68%);;
-    padding-top:2px;
-  }
-
-  #steps-dots .li-active {
-    display: inline-block;
-    font-size: 20px;
-    margin: 0 40px;
-    position: relative;
-    width:40px;
-    height:40px;
-    border-radius:250px;
-    border: 2px solid green;
-    text-align:center;
-    background: linear-gradient(79.88deg, #32AE1E 19.62%, #1E8D91 70.68%);
-    color:white;
-    padding-top:2px;
-  }
-
-  #steps-dots .li-done {
-    display: inline-block;
-    font-size: 20px;
-    margin: 0 40px;
-    position: relative;
-    width:40px;
-    height:40px;
-    border-radius:250px;
-    border: 2px solid green;
-    text-align:center;
-    background: white;
-    color:white;
-    padding-top:2px;
-  }
-
-  #steps-dots .li-done:nth-child(1)::after{
-    content: "";
-    background-color: green;
-    height: 2px;
-    width:120px;
-    display:block;
-    position: absolute;
-    z-index:-1;
-    bottom:15px;
-  }
-
-  #steps-dots .li-done:nth-child(2)::after{
-    content: "";
-    background-color: green;
-    height: 2px;
-    width:120px;
-    display:block;
-    position: absolute;
-    z-index:-1;
-    bottom:15px;
-  }
-  
-  #steps-dots li:nth-child(1)::after{
-    content: "";
-    background-color: #DADADA;
-    height: 2px;
-    width:120px;
-    display:block;
-    position: absolute;
-    z-index:-1;
-    bottom:15px;
-  }
-  
-  #steps-dots li:nth-child(2)::after{
-    content: "";
-    background-color: #DADADA;
-    height: 2px;
-    width:120px;
-    display:block;
-    position: absolute;
-    z-index:-1;
-    bottom:15px;
-  }
 
 .btn-b2b {
     background: #161616 !important;
@@ -1026,7 +935,6 @@ a.disabled {
 .po-card-header{
     background-color: white !important;
     padding: 0.75rem 0;
-    border-bottom:1px dashed #D0D5DD
 }
 
 .po-table-header-content{
@@ -1418,16 +1326,16 @@ a.disabled {
 
 }
 
-.b2b-badge-modena{
+.b2b-badge-alfath{
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 6px 20px;
     gap: 10px;
     height: 27px;
-    background: #f7e7cb;
+    background: #f2d7c4;
     border-radius: 5px;
-    color: #FAA819;
+    color: #df7d37;
     flex: none;
     order: 0;
     flex-grow: 0;
