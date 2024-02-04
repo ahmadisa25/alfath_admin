@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { getCourse } from '../../../../Service/CourseService';
-import CourseContents from './CourseContents';
+import TreeDropdowns from '../../../../Components/TreeDropdowns';
 
 const { $ } = window;
 const CourseDetail = () => {
@@ -27,6 +27,10 @@ const CourseDetail = () => {
     const [course_data, setCourseData] = useState({});
     const [current_page, setCurrentPage] = useState("Detail");
     const [state, _] = useState({ processing : false });
+
+    const onSetItem = (item) => {
+        console.log(item)
+    }
 
     useEffect(() => {
         /*if(userInfo.access){
@@ -158,7 +162,7 @@ const CourseDetail = () => {
                                 </>
                             }
                             {current_page === "Lessons" &&
-                                <CourseContents/>
+                                <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"}/>
                             }
                         </div>
                     </div>
