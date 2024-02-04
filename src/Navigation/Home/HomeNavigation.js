@@ -15,6 +15,7 @@ import CourseForm from '../../Pages/Pages/Settings/Course/CourseForm';
 import CourseDetail from '../../Pages/Pages/Settings/Course/CourseDetail';
 import AnnouncementSettings from '../../Pages/Announcement/AnnouncementSettings';
 import AnnouncementForm from '../../Pages/Announcement/AnnouncementForm';
+import ChapterForm from '../../Pages/Pages/Settings/Course/ChapterForm';
 
 const routeList = [
   '/users',
@@ -76,6 +77,7 @@ const HomeNavigation = () => {
             <Route path="/courses" element={<CourseSettings />} />
             <Route path="/course-form" element={<CourseForm />} />
             <Route path="/course-form/:course_id" element={<CourseForm />} />
+            <Route path="/chapter-form/:chapter_id/:course_id" element={<ChapterForm/>} />
             <Route path="/course/:course_id" element={<CourseDetail />} />
             <Route path="/announcements" element={<AnnouncementSettings />} />
             <Route path="/announcement-form" element={<AnnouncementForm />} />

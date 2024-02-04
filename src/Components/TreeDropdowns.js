@@ -45,7 +45,7 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class}) => {
     );
   };
 
-const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key}) => {
+const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key, no_title = false}) => {
 
     const [items_list, setItemsList] = useState([
     ]);
@@ -74,7 +74,7 @@ const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key}
                 <section className="content">
                     <div className="container-fluid">
                                 <div style={{display:"flex"}}>
-                                    <h5 className="black bold"> List of {capitalize(item_class)}s </h5>
+                                    {!no_title && <h5 className="black bold"> List of {capitalize(item_class)}s </h5>}
                                     <div style={{marginLeft:"auto"}}>
                                         <div style={{display:"flex", justifyContent:"flex-end", columnGap:"10px"}}>
                                             <input placeholder={`Look for a specific ${item_class} item`} onChange={(e) => setItemSearch(e.target.value)} style={{borderRadius:"8px", padding:"0 10px", fontSize:"13px", width:"220px"}}/>
@@ -84,7 +84,10 @@ const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key}
                                         </div>
                                     </div>
                                 </div>
-                                {(item_search_results.length <= 0 || item_search === "") && items_list && Object.keys(items_list).length > 0 && <ItemTree categories={items_list} sendCategory={setItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class}/>}
+                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree categories={items_list} sendItem={setItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class}/>}
+                                {(item_search_results.length <= 0 || item_search === "") && items_list.length == 0 && <div>
+                                    <h6 style={{textAlign:"center", marginTop:"2rem"}}>No items yet. Maybe you wanna add a new one?</h6>
+                                </div> }
                                 {item_search_results.length > 0 && item_search !== "" && <div>
                                     <ul>
                                         {item_search_results.map(elem => 

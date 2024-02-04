@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import Overlay from '../../../../Components/Overlay';
 import moment from 'moment';
 import {IoMdCart} from 'react-icons/io';
-import {FaEdit, FaBook} from 'react-icons/fa';
+import {FaEdit, FaBook, FaPlus} from 'react-icons/fa';
 import 'moment/locale/id';
 import ReactHtmlParser from 'react-html-parser';
 
@@ -16,6 +16,7 @@ import {
 import Swal from 'sweetalert2';
 import { getCourse } from '../../../../Service/CourseService';
 import TreeDropdowns from '../../../../Components/TreeDropdowns';
+import AddButton from '../../../../Components/MTable/AddButton';
 
 const { $ } = window;
 const CourseDetail = () => {
@@ -162,7 +163,12 @@ const CourseDetail = () => {
                                 </>
                             }
                             {current_page === "Lessons" &&
-                                <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"}/>
+                                <>
+                                    <div style={{display:"flex", color:"#CD5700", columnGap:"5px", cursor:"pointer", fontSize:"1rem", margin:"0 1.5rem 0.9rem 0rem"}} onClick={()=> navigate(`/chapter-form/${null}/${course_id}`)}>
+                                            <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
+                                    </div>
+                                    <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true}/>
+                                </>
                             }
                         </div>
                     </div>
