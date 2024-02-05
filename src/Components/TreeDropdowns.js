@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {BiSolidSelectMultiple} from 'react-icons/bi';
 import { capitalize } from 'lodash';
+import Swal from 'sweetalert2';
 
 let item_search_timer_id = -1;
 
@@ -45,10 +46,8 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class}) => {
     );
   };
 
-const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key, no_title = false}) => {
-
-    const [items_list, setItemsList] = useState([
-    ]);
+const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = []}) => {
+    const [items_list, setItemsList] = useState(static_items);
     const [item_search, setItemSearch] = useState("");
     const [item_search_results, setItemSearchResults] = useState([]);
 
@@ -63,6 +62,31 @@ const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key,
             item_search_timer_id = setTimeout(() => {});
         }
     }, [item_search])
+
+    useEffect(() => {
+        if(getAllItemsFunc){
+            getAllItemsFunc().then(res => {
+                if(res.status == 200){
+                    const items = [];
+    
+                    if(res.data?.Data?.length > 0){
+                        res.data.Data.forEach(item => {
+                            items.push(item)
+                        })
+                        setItemsList(items);
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: "Get items failed!"
+                        });
+                }
+            })
+        }
+       
+        
+    },[]);
 
 
     return(

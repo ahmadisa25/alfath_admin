@@ -47,7 +47,6 @@ const CourseDetail = () => {
 
                 getCourse(course_id).then(res => {
                         if(res.data.Status == 200){
-                            console.log(res.data.Data.Instructors)
                             setCourseData(res.data.Data)
                         } else {
                             Swal.fire({
@@ -167,7 +166,9 @@ const CourseDetail = () => {
                                     <div style={{display:"flex", color:"#CD5700", columnGap:"5px", cursor:"pointer", fontSize:"1rem", margin:"0 1.5rem 0.9rem 0rem"}} onClick={()=> navigate(`/chapter-form/${null}/${course_id}`)}>
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
                                     </div>
-                                    <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true}/>
+                                    {course_data?.Chapters?.length > 0 &&
+                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={course_data.Chapters}/>
+                                    }                                  
                                 </>
                             }
                         </div>

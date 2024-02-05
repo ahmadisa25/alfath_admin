@@ -55,7 +55,6 @@ const MTable = forwardRef(({ columns, onAddData, showIndex, showPaginationCounte
       delete _paginatpr.refresh;
       getData && getData(_paginatpr).then(res => {
         clearTimeout(loadTimeout);
-        console.log(res.data)
         const { data: { Data, Total } } = res;
         setState({ data: Data, total: Total, processing: false });
       }).catch(err => {
