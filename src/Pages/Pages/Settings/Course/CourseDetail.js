@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import Overlay from '../../../../Components/Overlay';
 import moment from 'moment';
 import {IoMdCart} from 'react-icons/io';
-import {FaEdit, FaBook, FaPlus} from 'react-icons/fa';
+import {FaEdit, FaBook} from 'react-icons/fa';
 import 'moment/locale/id';
 import ReactHtmlParser from 'react-html-parser';
 
@@ -16,7 +16,7 @@ import {
 import Swal from 'sweetalert2';
 import { getCourse } from '../../../../Service/CourseService';
 import TreeDropdowns from '../../../../Components/TreeDropdowns';
-import AddButton from '../../../../Components/MTable/AddButton';
+import { deleteChapter } from '../../../../Service/ChapterService';
 
 const { $ } = window;
 const CourseDetail = () => {
@@ -28,10 +28,73 @@ const CourseDetail = () => {
     const [course_data, setCourseData] = useState({});
     const [current_page, setCurrentPage] = useState("Detail");
     const [state, _] = useState({ processing : false });
+    const [refresh, setRefresh] = useState(false);
+    const [chapter_data, setChapterData] = useState([]);
 
     const onSetItem = (item) => {
         console.log(item)
     }
+
+    useEffect(() => {
+        if(refresh){    
+            getCourse(course_id).then(res => {
+                if(res.data.Status == 200){
+                    setCourseData(res.data.Data)
+                    setChapterData(res.data.Data.Chapters)
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: "Failed to get course data!"
+                     })
+                    navigate('/courses');
+                }
+        })
+        }
+    }, [refresh])
+
+    const onRemove = (chapter_id) => {
+        const swalWithBootstrapButtons = Swal.mixin({
+        })
+          
+          swalWithBootstrapButtons.fire({
+            icon: 'info',
+            title: 'Delete Chapter',
+            text: "Are you sure you want to delete this Chapter?",
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              deleteChapter(chapter_id).then(res => {
+                console.log(res)
+                if(res.status == 200){
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Chapter is successfully deleted.',
+                        'success'
+                    ).then(_ => setRefresh(true));
+                } else {
+                    swalWithBootstrapButtons.fire(
+                        'Error',
+                        'Chapter deletion Failed.',
+                        'error'
+                    ) 
+                }
+              })
+              
+            } else if (
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Chapter deletion cancelled',
+                'error'
+              )
+            }
+          })
+    };
 
     useEffect(() => {
         /*if(userInfo.access){
@@ -48,6 +111,7 @@ const CourseDetail = () => {
                 getCourse(course_id).then(res => {
                         if(res.data.Status == 200){
                             setCourseData(res.data.Data)
+                            setChapterData(res.data.Data.Chapters)
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -167,7 +231,7 @@ const CourseDetail = () => {
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
                                     </div>
                                     {course_data?.Chapters?.length > 0 &&
-                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={course_data.Chapters}/>
+                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove}/>
                                     }                                  
                                 </>
                             }

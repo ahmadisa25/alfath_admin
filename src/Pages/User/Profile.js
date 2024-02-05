@@ -54,7 +54,6 @@ function Profile() {
                         }); 
                     }
                 }).catch(err => {
-                    console.log(err);
                     Swal.fire({
                         icon: 'error',
                         title: "File upload error"

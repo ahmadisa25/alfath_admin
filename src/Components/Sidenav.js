@@ -8,7 +8,6 @@ import { permissionCheck } from "../Utils/Utils";
 
 /*modified from a code made by Mary Gathoni*/
 const Sidenav =  forwardRef(({layoutAdjust}, ref) => {
-    console.log(navData)
     useImperativeHandle(ref, () => {
         return { closeAfters: () => setafteropen({}) }
     })

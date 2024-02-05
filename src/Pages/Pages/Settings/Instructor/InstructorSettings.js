@@ -75,7 +75,6 @@ const InstructorSettings = () => {
                 }
               }).catch((err) => {
                 setState({...state, processing:false});
-                console.log(err);
               });
             } else if (
               result.dismiss === Swal.DismissReason.cancel

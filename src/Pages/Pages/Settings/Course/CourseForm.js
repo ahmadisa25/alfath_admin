@@ -136,7 +136,6 @@ const CourseForm = () => {
                 })
             })
 
-            console.log(converted_data_array);
             setState({ ...state, is_instructor_focus: true, available_instructors: converted_data_array });
             }), 500);
         } else {
