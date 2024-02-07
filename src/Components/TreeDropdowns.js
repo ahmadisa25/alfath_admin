@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import ReactHtmlParser from 'react-html-parser';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineModeEdit } from 'react-icons/md';
-import { BsTrashFill } from 'react-icons/bs';
+import { BsFillPlusCircleFill, BsTrashFill } from 'react-icons/bs';
 
 let item_search_timer_id = -1;
 const LESSON_DEPTH = 2;
@@ -41,6 +41,9 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
       <li style={{cursor:"pointer", marginBottom:"15px"}}>
         <div onClick={(e) => onItemClick(e, !clicked)} style={{ display:"flex", columnGap:"10px", marginTop:"10px"}}>
         <div>{!clicked ? <span>&#128193;</span>: <span>&#128194;</span>}{item[item_name_key]}</div>
+            <div onClick={(e) => navigate(`/category-form/null/${category.id}/${category_depth+1}`)} style={{display: "flex"}}>
+                <div style={{color:"green"}}><BsFillPlusCircleFill/></div>
+            </div>
             <div onClick={(e) => navigate(`/chapter-form/${item.ID}/${item.CourseID}`)} style={{display: "flex"}}>
                 <div style={{color:"#0099C3"}}><MdOutlineModeEdit/></div>
             </div>

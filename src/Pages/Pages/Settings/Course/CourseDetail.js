@@ -30,6 +30,7 @@ const CourseDetail = () => {
     const [state, _] = useState({ processing : false });
     const [refresh, setRefresh] = useState(false);
     const [chapter_data, setChapterData] = useState([]);
+    const [material_data, setMaterialData] = useState([]);
 
     const onSetItem = (item) => {
         console.log(item)
@@ -41,6 +42,7 @@ const CourseDetail = () => {
                 if(res.data.Status == 200){
                     setCourseData(res.data.Data)
                     setChapterData(res.data.Data.Chapters)
+                    setMaterialData(res.data.Data.Materials)
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -231,7 +233,7 @@ const CourseDetail = () => {
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
                                     </div>
                                     {course_data?.Chapters?.length > 0 &&
-                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove}/>
+                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"materials"} static_child_items_list={material_data}/>
                                     }                                  
                                 </>
                             }
