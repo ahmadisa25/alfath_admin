@@ -43,7 +43,7 @@ const MaterialForm = () => {
                         setValue('Name', res.data.Data.Name)
                         description_ref.current.setText(res.data.Data.Description)
                         setPhotoUpload({
-                            img_upload: `${UPLOAD_DIR}${res.data.Data.FileUrl}   `
+                            img_upload: `${res.data.Data.FileUrl}   `
                         })
                     } else {
                         Swal.fire({
@@ -233,8 +233,8 @@ const MaterialForm = () => {
                                                     <div className="form-group">
                                                         <label className="bold black">Material File</label>
                                                         <div>
-                                                            {(photo_upload.img_upload) && <div>
-                                                                <img className="img-account-profile mb-2" src={photo_upload.img_upload} alt="" style={{width:"10%"}} />
+                                                            {(photo_upload.img_upload) && <div style={{marginBottom:"10px"}}>
+                                                                {photo_upload.img_upload}
                                                             </div>}
                                                             {(!photo_upload?.img_upload) &&<div className="small font-italic text-muted mb-2">JPG, JPEG or PNG not larger than 1 MB</div>}
                                                             <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
