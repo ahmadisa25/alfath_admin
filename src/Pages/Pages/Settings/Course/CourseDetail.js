@@ -233,7 +233,7 @@ const CourseDetail = () => {
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
                                     </div>
                                     {course_data?.Chapters?.length > 0 &&
-                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"materials"} static_child_items_list={material_data}/>
+                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"material"} static_child_items_list={material_data} item_child_name_key={"Name"}/>
                                     }                                  
                                 </>
                             }

@@ -9,15 +9,15 @@ import 'react-quill/dist/quill.snow.css';
 import {
     useNavigate,useParams
 } from "react-router-dom";
-import { permissionCheck, urlEncodeData } from '../../../../Utils/Utils';
 import ScrollToTop from 'react-scroll-to-top';
-import { createChapter, getChapter, updateChapter } from '../../../../Service/ChapterService';
+import { createMaterial, getMaterial, updateMaterial } from '../../../../Service/MaterialService';
 import WysiwygText from '../../../../Components/WysiwygText';
+import { includes } from 'lodash';
 
 const { $ } = window;
 
 let instructor_timer_id = -1;
-const ChapterForm = () => {
+const MaterialForm = () => {
     let { userInfo } = useSelector(state => state.auth);
     const description_ref = useRef(null);
     const UPLOAD_DIR = process.env.REACT_APP_IMAGE_URL;
@@ -36,21 +36,22 @@ const ChapterForm = () => {
             }
         }
 
-        if(chapter_id && chapter_id !== "null"){
+        if(material_id && material_id != "null"){
             //if(permissionCheck(userInfo, "settings", "update")){
-                getChapter(chapter_id).then(res => {
+                getMaterial(material_id).then(res => {
                     if(res.data.Status == 200){
                         setValue('Name', res.data.Data.Name)
                         description_ref.current.setText(res.data.Data.Description)
-                        //setDescription(res.data.Data.Description)
-                        setValue('Duration', res.data.Data.Duration)
+                        setPhotoUpload({
+                            img_upload: `${UPLOAD_DIR}${res.data.Data.FileUrl}   `
+                        })
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: "Failed to get course data!"
+                            text: "Failed to get material data!"
                          })
-                        navigate(`/course/${course_id}`);
+                        navigate('/courses');
                     }
                 })
             //} else {
@@ -72,29 +73,66 @@ const ChapterForm = () => {
         is_instructor_focus: false
     });
 
-    const { chapter_id, course_id } = useParams();
-    //const [agent_enabled, setAgentEnabled] = useState(false);
-    const {processing, available_instructors, is_instructor_focus} = state;
-    const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Name: ''} });
-    const [instructors, setInstructors] = useState([]);
-    const [multi_select_val, setMultiSelectVal] = useState("");
+    const { material_id, chapter_id, course_id } = useParams();
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ defaultValues: { Name: ''} });
 
     const [photo_upload, setPhotoUpload] = useState({
         img_upload:"",
         File:""
     });
 
+    const onImageChange = (e) => {
+        const [file] = e.target.files;
+
+        const allowed_file_types = [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/pdf",
+            "video/mp4", 
+            "message/rfc822"
+        ];
+        
+        if (file) {
+            if(!includes(allowed_file_types, file.type)){
+                Swal.fire({
+                    icon: 'error',
+                    title: "That file extension is not allowed (only .png, .jpeg, .jpg, excel files, .eml, mp4 and pdf)"
+                });
+                return;
+            }
+            if(file.size <=1000000){
+                let photo_obj = {};
+                photo_obj.File = file;
+                photo_obj.img_upload = URL.createObjectURL(file);
+                setPhotoUpload(photo_obj);
+            } else{
+                Swal.fire({
+                    icon: 'error',
+                    title: "The image size is too large"
+                });
+            }
+
+        }
+    }
+
     const onFormSubmit = (data) => {
         setState({...state, processing:true})
-        let user_input = Object.assign({}, data, {Description: description_ref.current.getValue()}, {CourseID:course_id});
-        user_input = urlEncodeData(user_input);
-        if(!chapter_id || chapter_id == "null"){
-            createChapter(user_input).then(res => {
+        let user_input = Object.assign({}, data, {Description: description_ref.current.getValue()}, {CourseChapterID: chapter_id});
+        let formData = new FormData();
+        Object.keys(user_input).forEach(item => {
+            formData.append(item, user_input[item])
+        })
+        if(!material_id || material_id == "null"){
+            formData.append("file", photo_upload.File);
+            createMaterial(formData).then(res => {
                 if(res.status == 201){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: "Chapter data has successfully been created!"
+                        text: "Material data has successfully been created!"
                      }).then(_ => {
                         navigate(`/course/${course_id}`);
                      })
@@ -111,12 +149,15 @@ const ChapterForm = () => {
                  })
             })
         } else{
-            updateChapter(chapter_id ,user_input).then(res => {
+            if(photo_upload && photo_upload.File){
+                formData.append("file", photo_upload.File);
+            }
+            updateMaterial(material_id ,formData).then(res => {
                 if(res.data.Status == 200){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: "Chapter data has successfully been updated!"
+                        text: "Material data has successfully been updated!"
                      }).then(_ => {
                         navigate(`/course/${course_id}`);
                      })
@@ -159,11 +200,11 @@ const ChapterForm = () => {
                                         <div className='row'>
                                             <div className='col-md-6' style={{display:"flex"}}>
                                                 <div>
-                                                    <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate('/courses')}>arrow_back</span>
+                                                    <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate(`/course/${course_id}`)}>arrow_back</span>
                                                 </div>
                                                 <div>
-                                                    <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{(!course_id || course_id == "null")? "Add A New": "Edit"} Course</h4>
-                                                    <h6 style={{paddingLeft: 25, color:"black"}}>{!course_id? "Configuration for the new course" : "Modify course data"}</h6>
+                                                    <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{(!material_id || material_id == "null")? "Add A New": "Edit"} Material</h4>
+                                                    <h6 style={{paddingLeft: 25, color:"black"}}>{!material_id? "Configuration for the new material" : "Modify material data"}</h6>
                                                 </div>       
                                             </div>
                                             <div className='col-md-6'>
@@ -189,17 +230,18 @@ const ChapterForm = () => {
                                                             {errors.Name && <span className='text-danger'>{errors.Name.message}</span>}
                                                     </div>
                                                     <WysiwygText label={"Description"} required={true} ref={description_ref}/>
-                                                    <div className='form-group' style={{width:"12%"}}>
-                                                        <label htmlFor='Duration' className="black"><b>Duration</b> <span style={{color:"red"}}>*</span><i style={{fontSize:"16px"}}>--> type numbers only</i></label>
-                                                        <div className='d-flex align-items-center' style={{columnGap:"20px"}}>
-                                                            <div>
-                                                                <input type="number" className="inputLogin" maxLength="2000" id="Duration" {...register("Duration", {
-                                                                required: 'Course duration is required!',
-                                                                })} placeholder="60" className='form-control' autoComplete="off"/>
-                                                            </div>
-                                                            <div>Minutes</div>
+                                                    <div className="form-group">
+                                                        <label className="bold black">Material File</label>
+                                                        <div>
+                                                            {(photo_upload.img_upload) && <div>
+                                                                <img className="img-account-profile mb-2" src={photo_upload.img_upload} alt="" style={{width:"10%"}} />
+                                                            </div>}
+                                                            {(!photo_upload?.img_upload) &&<div className="small font-italic text-muted mb-2">JPG, JPEG or PNG not larger than 1 MB</div>}
+                                                            <button className="btn b2b-btn-add" type="button" onClick={()=> $('#picture-upload').click()}>
+                                                                    Upload a new file
+                                                            </button>
+                                                            <input id="picture-upload" name="picture-upload" type="file" accept="image/png, image/jpg, image/jpeg, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .pdf, video/mp4" class='d-none'  onChange={(e) =>onImageChange(e)}/>
                                                         </div>
-                                                        {errors.Duration && <span className='text-danger'>{errors.Duration.message}</span>}
                                                     </div>
                                                     
 
@@ -261,4 +303,4 @@ const ChapterForm = () => {
     )
 }
 
-export default ChapterForm;
+export default MaterialForm;

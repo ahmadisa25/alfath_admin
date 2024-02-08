@@ -10,17 +10,17 @@ import { BsFillPlusCircleFill, BsTrashFill } from 'react-icons/bs';
 let item_search_timer_id = -1;
 const LESSON_DEPTH = 2;
 
-const ItemTree = ({ items, sendItem, item_depth, item_name_key, item_class, on_delete}) => {
+const ItemTree = ({ items, sendItem, item_depth, item_name_key, item_class, on_delete, item_child_class=null, child_items=[]}) => {
     return (
       <ul className="categories-list">
         {items && items.length > 0 && items.map((item, i) => (
-          <Item key={`${item_class}-${i}`} item={item} deliverItem={sendItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete}/>
+          <Item key={`${item_class}-${i}`} item={item} deliverItem={sendItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} child_items={child_items}/>
         ))}
       </ul>
     );
   };
 
-const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_delete}) => {
+const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_delete, item_child_class, child_items}) => {
     const navigate = useNavigate();
     const [clicked, setClicked] = useState(false);
     const [children, setChildren] = useState([]);
@@ -41,7 +41,7 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
       <li style={{cursor:"pointer", marginBottom:"15px"}}>
         <div onClick={(e) => onItemClick(e, !clicked)} style={{ display:"flex", columnGap:"10px", marginTop:"10px"}}>
         <div>{!clicked ? <span>&#128193;</span>: <span>&#128194;</span>}{item[item_name_key]}</div>
-            <div onClick={(e) => navigate(`/category-form/null/${category.id}/${category_depth+1}`)} style={{display: "flex"}}>
+            <div onClick={(e) => navigate(`/${item_child_class.toLowerCase()}-form/null/${item.ID}/${item.CourseID}`)} style={{display: "flex"}}>
                 <div style={{color:"green"}}><BsFillPlusCircleFill/></div>
             </div>
             <div onClick={(e) => navigate(`/chapter-form/${item.ID}/${item.CourseID}`)} style={{display: "flex"}}>
@@ -63,16 +63,17 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
         {children && children.length > 0 && !processing && <ItemTree items={children} sendItem={deliverItem} item_depth={item_depth + 1}/>}
         {(!children || children.length <= 0) && !processing && clicked && <div>No {item_class}s</div>}
         {clicked && <div style={{marginTop:"1.2rem"}}>
-            <h6 className="bold black">Materials List</h6>
+            <h6 className="bold black">{capitalize(item_child_class)}s List</h6>
             </div>}
-        {processing && <div>
+        {/*processing &&<div>
             <span>Fetching...</span>
-            </div>}
+        </div>*/}
+        {child_items?.length > 0 && child_items.map(item => <div>{<span>&#128213;</span>}{item[item_name_key]}</div>)}
       </li>
     );
   };
 
-const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = [], on_delete=null}) => {
+const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = [], on_delete=null, item_child_class=null, static_child_items_list=[], item_child_name_key=null}) => {
     const [items_list, setItemsList] = useState(static_items);
     const [item_search, setItemSearch] = useState("");
     const [item_search_results, setItemSearchResults] = useState([]);
@@ -134,7 +135,7 @@ const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key,
                                         </div>
                                     </div>
                                 </div>
-                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree items={items_list} sendItem={setItem} item_depth={1} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete}/>}
+                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree items={items_list} sendItem={setItem} item_depth={1} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class}/>}
                                 {(item_search_results.length <= 0 || item_search === "") && items_list.length == 0 && <div>
                                     <h6 style={{textAlign:"center", marginTop:"2rem"}}>No items yet. Maybe you wanna add a new one?</h6>
                                 </div> }
