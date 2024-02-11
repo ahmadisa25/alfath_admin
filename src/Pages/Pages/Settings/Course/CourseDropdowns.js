@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, forwardRef, useImperativeHandle} from 'react';
 import {BiSolidSelectMultiple} from 'react-icons/bi';
 import { capitalize } from 'lodash';
 import Swal from 'sweetalert2';
@@ -10,17 +10,17 @@ import { BsFillPlusCircleFill, BsTrashFill } from 'react-icons/bs';
 let item_search_timer_id = -1;
 const LESSON_DEPTH = 2;
 
-const ItemTree = ({ items, sendItem, item_depth, item_name_key, item_class, on_delete, item_child_class=null, child_items=[], item_child_name_key}) => {
+const ItemTree = ({ items, sendItem, item_depth, item_name_key, item_class, on_delete, item_child_class=null, child_items=[], item_child_name_key, onDeleteChild= null}) => {
     return (
       <ul className="categories-list">
         {items && items.length > 0 && items.map((item, i) => (
-          <Item key={`${item_class}-${i}`} item={item} deliverItem={sendItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} child_items={child_items} item_child_name_key={item_child_name_key}/>
+          <Item key={`${item_class}-${i}`} item={item} deliverItem={sendItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} child_items={child_items} item_child_name_key={item_child_name_key} onDeleteChild={onDeleteChild}/>
         ))}
       </ul>
     );
   };
 
-const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_delete, item_child_class, child_items, item_child_name_key}) => {
+const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_delete, item_child_class, child_items, item_child_name_key, onDeleteChild= null}) => {
     const navigate = useNavigate();
     const course_id = item.CourseID;
     const [clicked, setClicked] = useState(false);
@@ -75,7 +75,10 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
             <div style={{marginBottom:"10px", display:"flex"}}>
                 <div><span>&#128213;</span>{item[item_child_name_key]}</div>
                 <div onClick={(e) => navigate(`/material-form/${item.ID}/${item.CourseChapterID}/${course_id}`)} style={{display: "flex"}}>
-                <div style={{color:"#0099C3"}}><MdOutlineModeEdit/></div>
+                    <div style={{color:"#0099C3"}}><MdOutlineModeEdit/></div>
+                </div>
+                <div onClick={(e) => onDeleteChild(item.ID)} style={{display: "flex"}}>
+                <div style={{color:"#0099C3"}}><BsTrashFill/></div>
             </div>
             </div>
         )})}
@@ -84,8 +87,10 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
     );
   };
 
-const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = [], on_delete=null, item_child_class=null, static_child_items_list=[], item_child_name_key=null}) => {
-    console.log(static_items)
+const CourseDropdowns = forwardRef(({sendItemToParent = null, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = [], on_delete=null, item_child_class=null, static_child_items_list=[], item_child_name_key=null, onDeleteChild=null}, ref) => {
+    useImperativeHandle(ref, () => {
+        return { setStaticItems: (items) => setItemsList(items) }
+    })
     const [items_list, setItemsList] = useState(static_items);
     const [item_search, setItemSearch] = useState("");
     const [item_search_results, setItemSearchResults] = useState([]);
@@ -147,7 +152,7 @@ const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key,
                                         </div>
                                     </div>
                                 </div>
-                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree items={items_list} sendItem={setItem} item_depth={1} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} item_child_name_key={item_child_name_key}/>}
+                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree items={items_list} sendItem={setItem} item_depth={1} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} item_child_name_key={item_child_name_key} onDeleteChild={onDeleteChild}/>}
                                 {(item_search_results.length <= 0 || item_search === "") && items_list.length == 0 && <div>
                                     <h6 style={{textAlign:"center", marginTop:"2rem"}}>No items yet. Maybe you wanna add a new one?</h6>
                                 </div> }
@@ -172,6 +177,6 @@ const TreeDropdowns = ({sendItemToParent, item_class, item_depth, item_name_key,
                 </section>
             </div>
     )
-}
+})
 
-export default TreeDropdowns;
+export default CourseDropdowns;

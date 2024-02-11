@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     useNavigate
 } from "react-router-dom";
@@ -15,14 +15,16 @@ import {
 } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { getCourse } from '../../../../Service/CourseService';
-import TreeDropdowns from '../../../../Components/TreeDropdowns';
 import { deleteChapter } from '../../../../Service/ChapterService';
+import { deleteMaterial } from '../../../../Service/MaterialService';
+import CourseDropdowns from './CourseDropdowns';
 
 const { $ } = window;
 const CourseDetail = () => {
     const UPLOAD_DIR = process.env.REACT_APP_IMAGE_URL;
     let { userInfo } = useSelector(state => state.auth);
     const { course_id } = useParams();
+    const tree_ref = useRef(null);
     moment.locale('id');
     const navigate = useNavigate();
     const [course_data, setCourseData] = useState({});
@@ -30,11 +32,6 @@ const CourseDetail = () => {
     const [state, _] = useState({ processing : false });
     const [refresh, setRefresh] = useState(false);
     const [chapter_data, setChapterData] = useState([]);
-    const [material_data, setMaterialData] = useState([]);
-
-    const onSetItem = (item) => {
-        console.log(item)
-    }
 
     useEffect(() => {
         if(refresh){    
@@ -42,7 +39,7 @@ const CourseDetail = () => {
                 if(res.data.Status == 200){
                     setCourseData(res.data.Data)
                     setChapterData(res.data.Data.Chapters)
-                    setMaterialData(res.data.Data.Materials)
+                    tree_ref.current.setStaticItems(res.data.Data.Chapters);
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -92,6 +89,48 @@ const CourseDetail = () => {
               swalWithBootstrapButtons.fire(
                 'Cancelled',
                 'Chapter deletion cancelled',
+                'error'
+              )
+            }
+          })
+    };
+
+    const onRemoveMaterial = (material_id) => {
+        const swalWithBootstrapButtons = Swal.mixin({
+        })
+          
+          swalWithBootstrapButtons.fire({
+            icon: 'info',
+            title: 'Delete Material',
+            text: "Are you sure you want to delete this Material?",
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              deleteMaterial(material_id).then(res => {
+                if(res.status == 200){
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Material is successfully deleted.',
+                        'success'
+                    ).then(_ => setRefresh(true));
+                } else {
+                    swalWithBootstrapButtons.fire(
+                        'Error',
+                        'Material deletion Failed.',
+                        'error'
+                    ) 
+                }
+              })
+              
+            } else if (
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Material deletion cancelled',
                 'error'
               )
             }
@@ -233,7 +272,7 @@ const CourseDetail = () => {
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
                                     </div>
                                     {course_data?.Chapters?.length > 0 &&
-                                        <TreeDropdowns sendItemToParent={onSetItem} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"material"}  item_child_name_key={"Name"}/>
+                                        <CourseDropdowns ref={tree_ref} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"material"}  item_child_name_key={"Name"} onDeleteChild={onRemoveMaterial}/>
                                     }                                  
                                 </>
                             }
