@@ -44,13 +44,16 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
         <div onClick={(e) => onItemClick(e, !clicked)} style={{ display:"flex", columnGap:"10px", marginTop:"10px"}}>
         <div>{!clicked ? <span>&#128193;</span>: <span>&#128194;</span>}{item[item_name_key]}</div>
             <div onClick={(e) => navigate(`/${item_child_class.toLowerCase()}-form/null/${item.ID}/${item.CourseID}`)} style={{display: "flex"}}>
-                <div style={{color:"green"}}><BsFillPlusCircleFill/></div>
+                <div style={{color:"green"}}><BsFillPlusCircleFill/>&nbsp;<span style={{fontSize:"12px"}}>Add Material</span></div>
+            </div>
+            <div onClick={(e) => navigate(`/quiz-form/null/${item.ID}/${item.CourseID}`)} style={{display: "flex"}}>
+                <div style={{color:"green"}}><BsFillPlusCircleFill/>&nbsp;<span style={{fontSize:"12px"}}>Add Quiz</span></div>
             </div>
             <div onClick={(e) => navigate(`/chapter-form/${item.ID}/${item.CourseID}`)} style={{display: "flex"}}>
-                <div style={{color:"#0099C3"}}><MdOutlineModeEdit/></div>
+                <div style={{color:"#0099C3"}}><MdOutlineModeEdit/>&nbsp;<span style={{fontSize:"12px"}}>Edit</span></div>
             </div>
             <div onClick={(e) => on_delete(item.ID)} style={{display: "flex"}}>
-                <div style={{color:"#0099C3"}}><BsTrashFill/></div>
+                <div style={{color:"red"}}><BsTrashFill/>&nbsp;<span style={{fontSize:"12px"}}>Delete</span></div>
             </div>
             {item_depth == LESSON_DEPTH && <div onClick={(e) => {
                 deliverItem(item)
@@ -72,13 +75,14 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
         </div>*/}
         {clicked && item[`${item_child_class_name}s`] && item[`${item_child_class_name}s`].length > 0 && item[`${item_child_class_name}s`].map(item =>  {
         return (
-            <div style={{marginBottom:"10px", display:"flex"}}>
+            <div style={{marginBottom:"10px", display:"flex", marginLeft:"20px", columnGap:"3px"}}>
                 <div><span>&#128213;</span>{item[item_child_name_key]}</div>
-                <div onClick={(e) => navigate(`/material-form/${item.ID}/${item.CourseChapterID}/${course_id}`)} style={{display: "flex"}}>
-                    <div style={{color:"#0099C3"}}><MdOutlineModeEdit/></div>
+                <div onClick={(e) => navigate(`/material-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
+                    <div style={{color:"#0099C3"}}><MdOutlineModeEdit/><span style={{fontSize:"12px"}}>Edit</span></div>
                 </div>
+                &nbsp;
                 <div onClick={(e) => onDeleteChild(item.ID)} style={{display: "flex"}}>
-                <div style={{color:"#0099C3"}}><BsTrashFill/></div>
+                <div style={{color:"red"}}><BsTrashFill/><span style={{fontSize:"12px"}}>Delete</span></div>
             </div>
             </div>
         )})}

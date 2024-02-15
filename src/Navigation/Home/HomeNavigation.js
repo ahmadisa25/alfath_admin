@@ -17,6 +17,7 @@ import AnnouncementSettings from '../../Pages/Announcement/AnnouncementSettings'
 import AnnouncementForm from '../../Pages/Announcement/AnnouncementForm';
 import ChapterForm from '../../Pages/Pages/Settings/Course/ChapterForm';
 import MaterialForm from '../../Pages/Pages/Settings/Course/MaterialForm';
+import QuizForm from '../../Pages/Pages/Settings/Course/QuizForm';
 
 const routeList = [
   '/users',
@@ -80,6 +81,7 @@ const HomeNavigation = () => {
             <Route path="/course-form/:course_id" element={<CourseForm />} />
             <Route path="/chapter-form/:chapter_id/:course_id" element={<ChapterForm/>} />
             <Route path="/material-form/:material_id/:chapter_id/:course_id" element={<MaterialForm/>} />
+            <Route path="/quiz-form/:quiz_id/:chapter_id/:course_id" element={<QuizForm/>} />
             <Route path="/course/:course_id" element={<CourseDetail />} />
             <Route path="/announcements" element={<AnnouncementSettings />} />
             <Route path="/announcement-form" element={<AnnouncementForm />} />
