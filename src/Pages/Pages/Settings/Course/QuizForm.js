@@ -52,7 +52,7 @@ const QuizForm = () => {
                             title: 'Error!',
                             text: "Failed to get quiz data!"
                          })
-                        navigate('/courses');
+                        navigate(`/course/${course_id}`);
                     }
                 })
             //} else {
@@ -68,7 +68,7 @@ const QuizForm = () => {
 
     const navigate = useNavigate();
 
-    const { quiz_id, chapter_id } = useParams();
+    const { quiz_id, chapter_id, course_id } = useParams();
     const {processing} = state;
     const { register, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm({ defaultValues: { Name: ''} });
 
@@ -85,7 +85,7 @@ const QuizForm = () => {
                         title: 'Success!',
                         text: "Quiz data has successfully been created!"
                      }).then(_ => {
-                        navigate('/courses');
+                        navigate(`/course/${course_id}`);
                      })
                  
                 }
@@ -107,7 +107,7 @@ const QuizForm = () => {
                         title: 'Success!',
                         text: "Quiz data has successfully been updated!"
                      }).then(_ => {
-                        navigate('/courses');
+                        navigate(`/course/${course_id}`);
                      })
                  
                 }
@@ -141,7 +141,7 @@ const QuizForm = () => {
                                         <div className='row'>
                                             <div className='col-md-6' style={{display:"flex"}}>
                                                 <div>
-                                                    <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate('/courses')}>arrow_back</span>
+                                                    <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate(`/course/${course_id}`)}>arrow_back</span>
                                                 </div>
                                                 <div>
                                                     <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{(!quiz_id || quiz_id == "null")? "Add A New": "Edit"} Quiz</h4>

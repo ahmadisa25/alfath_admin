@@ -7,20 +7,21 @@ import { useNavigate } from 'react-router-dom';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsFillPlusCircleFill, BsTrashFill } from 'react-icons/bs';
 
+
 let item_search_timer_id = -1;
 const LESSON_DEPTH = 2;
 
-const ItemTree = ({ items, sendItem, item_depth, item_name_key, item_class, on_delete, item_child_class=null, child_items=[], item_child_name_key, onDeleteChild= null}) => {
+const ItemTree = ({ items, sendItem, item_depth, item_name_key, item_class, on_delete, item_child_class=null, child_items=[], item_child_name_key, onDeleteChild= null, onDeleteQuiz=null}) => {
     return (
       <ul className="categories-list">
         {items && items.length > 0 && items.map((item, i) => (
-          <Item key={`${item_class}-${i}`} item={item} deliverItem={sendItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} child_items={child_items} item_child_name_key={item_child_name_key} onDeleteChild={onDeleteChild}/>
+          <Item key={`${item_class}-${i}`} item={item} deliverItem={sendItem} item_depth={item_depth} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} child_items={child_items} item_child_name_key={item_child_name_key} onDeleteChild={onDeleteChild} onDeleteQuiz={onDeleteQuiz}/>
         ))}
       </ul>
     );
   };
 
-const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_delete, item_child_class, child_items, item_child_name_key, onDeleteChild= null}) => {
+const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_delete, item_child_class, child_items, item_child_name_key, onDeleteChild= null, onDeleteQuiz=null}) => {
     const navigate = useNavigate();
     const course_id = item.CourseID;
     const [clicked, setClicked] = useState(false);
@@ -86,12 +87,28 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
             </div>
             </div>
         )})}
+        {clicked && <div style={{marginTop:"1.2rem"}}>
+            <h6 className="bold black">Quizzes List</h6>
+            </div>}
+            {clicked && item[`Quizzes`] && item[`Quizzes`].length > 0 && item[`Quizzes`].map(item =>  {
+        return (
+            <div style={{marginBottom:"10px", display:"flex", marginLeft:"20px", columnGap:"3px"}}>
+                <div><span>&#x1F3C6;</span>{item[item_child_name_key]}</div>
+                <div onClick={(e) => navigate(`/quiz-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
+                    <div style={{color:"#0099C3"}}><MdOutlineModeEdit/><span style={{fontSize:"12px"}}>Edit</span></div>
+                </div>
+                &nbsp;
+                <div onClick={(e) => onDeleteQuiz(item.ID)} style={{display: "flex"}}>
+                <div style={{color:"red"}}><BsTrashFill/><span style={{fontSize:"12px"}}>Delete</span></div>
+            </div>
+            </div>
+        )})}
         {child_items?.length > 0 && child_items.map(item => <div>{<span>&#128213;</span>}{item[item_name_key]}</div>)}
       </li>
     );
   };
 
-const CourseDropdowns = forwardRef(({sendItemToParent = null, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = [], on_delete=null, item_child_class=null, static_child_items_list=[], item_child_name_key=null, onDeleteChild=null}, ref) => {
+const CourseDropdowns = forwardRef(({sendItemToParent = null, item_class, item_depth, item_name_key, no_title = false, getAllItemsFunc = null, static_items = [], on_delete=null, item_child_class=null, static_child_items_list=[], item_child_name_key=null, onDeleteChild=null, onDeleteQuiz=null}, ref) => {
     useImperativeHandle(ref, () => {
         return { setStaticItems: (items) => setItemsList(items) }
     })
@@ -156,7 +173,7 @@ const CourseDropdowns = forwardRef(({sendItemToParent = null, item_class, item_d
                                         </div>
                                     </div>
                                 </div>
-                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree items={items_list} sendItem={setItem} item_depth={1} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} item_child_name_key={item_child_name_key} onDeleteChild={onDeleteChild}/>}
+                                {(item_search_results.length <= 0 || item_search === "") && items_list?.length > 0 && <ItemTree items={items_list} sendItem={setItem} item_depth={1} item_name_key={item_name_key} item_class={item_class} on_delete={on_delete} item_child_class={item_child_class} item_child_name_key={item_child_name_key} onDeleteChild={onDeleteChild} onDeleteQuiz={onDeleteQuiz}/>}
                                 {(item_search_results.length <= 0 || item_search === "") && items_list.length == 0 && <div>
                                     <h6 style={{textAlign:"center", marginTop:"2rem"}}>No items yet. Maybe you wanna add a new one?</h6>
                                 </div> }

@@ -18,6 +18,7 @@ import { getCourse } from '../../../../Service/CourseService';
 import { deleteChapter } from '../../../../Service/ChapterService';
 import { deleteMaterial } from '../../../../Service/MaterialService';
 import CourseDropdowns from './CourseDropdowns';
+import { deleteQuiz } from '../../../../Service/QuizService';
 
 const { $ } = window;
 const CourseDetail = () => {
@@ -51,6 +52,48 @@ const CourseDetail = () => {
         })
         }
     }, [refresh])
+
+    const onRemoveQuiz = (quiz_id) => {
+        const swalWithBootstrapButtons = Swal.mixin({
+        })
+          
+          swalWithBootstrapButtons.fire({
+            icon: 'info',
+            title: 'Delete Quiz',
+            text: "Are you sure you want to delete this Quiz?",
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              deleteQuiz(quiz_id).then(res => {
+                if(res.status == 200){
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Quiz is successfully deleted.',
+                        'success'
+                    ).then(_ => setRefresh(true));
+                } else {
+                    swalWithBootstrapButtons.fire(
+                        'Error',
+                        'Quiz deletion Failed.',
+                        'error'
+                    ) 
+                }
+              })
+              
+            } else if (
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Quiz deletion cancelled',
+                'error'
+              )
+            }
+          })
+    };
 
     const onRemove = (chapter_id) => {
         const swalWithBootstrapButtons = Swal.mixin({
@@ -176,7 +219,7 @@ const CourseDetail = () => {
             <section className="content">
 
                 <div className="container-fluid">
-                    <div className="card shadow mb-4" style={{height:"85vh"}}>
+                    <div className="card shadow mb-4">
                         <div className='card-header po-card-header' style={{borderBottom:"none"}}>
                             <div className="container-fluid">
                         <div className="row mb-2">
@@ -272,7 +315,7 @@ const CourseDetail = () => {
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new chapter</div>
                                     </div>
                                     {course_data?.Chapters?.length > 0 &&
-                                        <CourseDropdowns ref={tree_ref} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"material"}  item_child_name_key={"Name"} onDeleteChild={onRemoveMaterial}/>
+                                        <CourseDropdowns ref={tree_ref} item_class={"lesson"} item_depth={2} item_name_key={"Name"} no_title={true} static_items={chapter_data} on_delete={onRemove} item_child_class={"material"}  item_child_name_key={"Name"} onDeleteChild={onRemoveMaterial} onDeleteQuiz={onRemoveQuiz}/>
                                     }                                  
                                 </>
                             }
