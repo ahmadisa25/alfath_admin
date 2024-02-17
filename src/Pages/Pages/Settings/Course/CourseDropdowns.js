@@ -93,15 +93,14 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
             </div>}
             {clicked && item[`Quizzes`] && item[`Quizzes`].length > 0 && item[`Quizzes`].map(item =>  {
         return (
-            <div style={{marginBottom:"10px", display:"flex", marginLeft:"20px", columnGap:"3px"}}>
+            <div style={{marginBottom:"10px", display:"flex", marginLeft:"20px", columnGap:"10px"}}>
                 <div><span>&#x1F3C6;</span>{item[item_child_name_key]}</div>
                 <div onClick={(e) => navigate(`/quiz-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
-                    <div style={{color:"#0099C3"}}><IoListCircle /><span style={{fontSize:"12px"}}>Setup Questions</span></div>
+                    <div style={{color:"green"}}><IoListCircle /><span style={{fontSize:"12px"}}>Setup Questions</span></div>
                 </div>
                 <div onClick={(e) => navigate(`/quiz-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
                     <div style={{color:"#0099C3"}}><MdOutlineModeEdit/><span style={{fontSize:"12px"}}>Edit</span></div>
                 </div>
-                &nbsp;
                 <div onClick={(e) => onDeleteQuiz(item.ID)} style={{display: "flex"}}>
                 <div style={{color:"red"}}><BsTrashFill/><span style={{fontSize:"12px"}}>Delete</span></div>
             </div>
