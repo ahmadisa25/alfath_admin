@@ -13,11 +13,13 @@ import StudentForm from '../../Pages/Pages/Settings/Student/StudentForm';
 import CourseSettings from '../../Pages/Pages/Settings/Course/CourseSettings';
 import CourseForm from '../../Pages/Pages/Settings/Course/CourseForm';
 import CourseDetail from '../../Pages/Pages/Settings/Course/CourseDetail';
+import QuizDetail from '../../Pages/Pages/Settings/Course/QuizDetail';
 import AnnouncementSettings from '../../Pages/Announcement/AnnouncementSettings';
 import AnnouncementForm from '../../Pages/Announcement/AnnouncementForm';
 import ChapterForm from '../../Pages/Pages/Settings/Course/ChapterForm';
 import MaterialForm from '../../Pages/Pages/Settings/Course/MaterialForm';
 import QuizForm from '../../Pages/Pages/Settings/Course/QuizForm';
+import QuestionForm from '../../Pages/Pages/Settings/Course/QuestionForm';
 
 const routeList = [
   '/users',
@@ -81,6 +83,8 @@ const HomeNavigation = () => {
             <Route path="/course-form/:course_id" element={<CourseForm />} />
             <Route path="/chapter-form/:chapter_id/:course_id" element={<ChapterForm/>} />
             <Route path="/material-form/:material_id/:chapter_id/:course_id" element={<MaterialForm/>} />
+            <Route path="/question-form/:question_id/:quiz_id/:course_id" element={<QuestionForm/>} />
+            <Route path="/quiz/:quiz_id/:course_id" element={<QuizDetail/>} />
             <Route path="/quiz-form/:quiz_id/:chapter_id/:course_id" element={<QuizForm/>} />
             <Route path="/course/:course_id" element={<CourseDetail />} />
             <Route path="/announcements" element={<AnnouncementSettings />} />
