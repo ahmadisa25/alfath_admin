@@ -6,6 +6,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { BsFillPlusCircleFill, BsTrashFill } from 'react-icons/bs';
+import { IoListCircle } from "react-icons/io5";
 
 
 let item_search_timer_id = -1;
@@ -94,6 +95,9 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
         return (
             <div style={{marginBottom:"10px", display:"flex", marginLeft:"20px", columnGap:"3px"}}>
                 <div><span>&#x1F3C6;</span>{item[item_child_name_key]}</div>
+                <div onClick={(e) => navigate(`/quiz-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
+                    <div style={{color:"#0099C3"}}><IoListCircle /><span style={{fontSize:"12px"}}>Setup Questions</span></div>
+                </div>
                 <div onClick={(e) => navigate(`/quiz-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
                     <div style={{color:"#0099C3"}}><MdOutlineModeEdit/><span style={{fontSize:"12px"}}>Edit</span></div>
                 </div>
