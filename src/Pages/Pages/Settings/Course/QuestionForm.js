@@ -2,16 +2,14 @@ import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
-import Overlay from '../../../Components/Overlay';
+import Overlay from '../../../../Components/Overlay';
 import {
     useNavigate, useParams
 } from "react-router-dom";
-import { createQuestion, updateQuestion } from '../../../../Service/QuestionService';
-import { InputSwitch } from 'primereact/inputswitch';
-import { isObjectEmpty, renderFields } from '../../../Utils/Utils';
-import { permissionCheck } from '../../../Utils/Utils';
-import ScrollTop from '../../../Components/ScrollTop';
-import {AiFillCloseCircle} from 'react-icons/ai';
+import { createQuestion, updateQuestion, getQuestion } from '../../../../Service/QuestionService';
+import { renderFields, urlEncodeData } from '../../../../Utils/Utils';
+import { permissionCheck } from '../../../../Utils/Utils';
+import ScrollTop from '../../../../Components/ScrollTop';
 
 
 const { $ } = window;   
@@ -21,7 +19,11 @@ const QuestionForm = () => {
     const [state, setState] = useState({ processing : false });
     const navigate = useNavigate();
     
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ defaultValues: {} });
+    const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ defaultValues: {} });
+
+    const onFieldTypeChange = (e) => {
+        setValue("Type", e.target.value);
+    }
 
     useEffect(() => {
         if(userInfo.access){
@@ -73,13 +75,13 @@ const QuestionForm = () => {
     },[]);
 
     const onFormSubmit = (data) => {
-        if(data.field_name){
+        if(data.title){
             let regex = /^[a-zA-Z0-9\s]+$/;
-            if(!regex.test(data.field_name)){
+            if(!regex.test(data.Title)){
                 Swal.fire({
                     icon: 'error',
-                    title: 'Request Creation Failed!',
-                    text: "Only alphanumeric characters and spaces are allowed in Field Name!"
+                    title: 'Question Creation Failed!',
+                    text: "Only alphanumeric characters and spaces are allowed in Question Title!"
                  }).then(_ => {
                     setState({...state, processing:false});
                  });
@@ -87,7 +89,9 @@ const QuestionForm = () => {
                  return;
             }
         }
-        const user_input = data;
+        let user_input = Object.assign({}, data, {ChapterQuizID: quiz_id});
+        user_input = urlEncodeData(user_input)
+        console.log(user_input);
         if(!question_id || question_id == "null"){
             createQuestion(user_input).then(res => {
                 if(res.status == 201){
@@ -142,8 +146,6 @@ const QuestionForm = () => {
         "single-text", "multiple-text", "single-choices","multiple-choices"
     ];
 
-    //useEffect(() => console.log(field_type_selected), [field_type_selected]);
-
     return(
         <div className="content-wrapper" style={{height:"100vh"}}>
             <ScrollTop/>
@@ -153,11 +155,11 @@ const QuestionForm = () => {
                     <div className='row'>
                         <div className='col-md-6' style={{display:"flex"}}>
                             <div>
-                                <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate('/service-request-fields')}>arrow_back</span>
+                                <span class="material-icons" style={{fontSize:"30px", color: "black", cursor: "pointer"}} onClick={() => navigate(`/quiz/${quiz_id}/${course_id}`)}>arrow_back</span>
                             </div>
                             <div>
-                                <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{!field_id? "Add A New": "Edit"} Field</h4>
-                                <h6 style={{paddingLeft: 25, color:"black"}}>{!field_id? "Configuration for the new field" : "Modify field data"}</h6>
+                                <h4 className='fw-500' style={{paddingLeft: 25, color:"black"}}>{(!question_id || question_id =="null")? "Add A New": "Edit"} Question</h4>
+                                <h6 style={{paddingLeft: 25, color:"black"}}>{(!question_id || question_id =="null")? "Configuration for the new question" : "Modify question data"}</h6>
                             </div>       
                         </div>
                         <div className='col-md-6'>
@@ -183,29 +185,11 @@ const QuestionForm = () => {
                                                         <>
                                                         <div style={{marginBottom:"30px"}}><span style={{color:"red"}}>*</span><span> = Mandatory.</span></div>
                                                             <div className='form-group' style={{marginBottom:"30px"}}>
-                                                                <label className="bold black">Field Name<span style={{color:"red"}}>*</span></label><i style={{fontSize:"16px", color:"black"}}>--> Only alphanumeric characters and spaces are allowed</i>
+                                                                <label className="bold black">Question Title<span style={{color:"red"}}>*</span></label><i style={{fontSize:"16px", color:"black"}}>--> Only alphanumeric characters and spaces are allowed</i>
                                                                 <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                <input {...register('field_name', { required: { value: true, message: 'Name is required' } })} className='inputLogin' />
+                                                                <input {...register('Title', { required: { value: true, message: 'Title is required' } })} className='inputLogin' />
                                                                 </div>
-                                                                {errors.field_name && <span className='text-danger'>{errors.field_name.message}</span>}
-                                                            </div>
-                                                            <div className='form-group' style={{marginBottom:"30px"}}>
-                                                                <label className="bold black">Field Placeholder<span style={{color:"red"}}>*</span></label><i style={{fontSize:"16px", color:"black"}}>--> max. 500 chars</i>
-                                                                <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                <textarea maxLength="500" {...register('field_placeholder')} className='inputLogin' />
-                                                                </div>
-                                                                {errors.field_name && <span className='text-danger'>{errors.field_name.message}</span>}
-                                                            </div>
-                                                            <div className='form-group' style={{display:"flex", columnGap:"20px", alignItems:"center", margin:"3 0px 0"}}>
-                                                                    <label htmlFor="ticket_number" className="black" style={{paddingTop:"0.5em"}}><b>Category:</b>&nbsp;<span style={{color:"red"}}>*</span></label>
-                                                                    {!selected_category.id && <button type='button' className="btn" onClick={onShowCategoryModal} style={{cursor:"pointer", border:"1px solid black", background:"black", color:"white", borderRadius:"8px", fontSize:"16px"}}>+ Select Service Category</button>}
-                                                                    {selected_category.id && 
-                                                                    <div style={{display:"flex", alignItems:"center", columnGap:"10px"}}>
-                                                                            <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                                <span>{selected_category.category_name}</span>
-                                                                            </div>
-                                                                            <div style={{color: "red", cursor:"pointer"}} onClick={() => setSelectedCategory({})}><AiFillCloseCircle/></div>
-                                                                    </div>}
+                                                                {errors.Title && <span className='text-danger'>{errors.Title.message}</span>}
                                                             </div>
                                                             <div className='form-group' style={{marginBottom:"30px"}}>
                                                                 <label className="bold black">Field Type<span style={{color:"red"}}>*</span></label>
@@ -213,7 +197,7 @@ const QuestionForm = () => {
                                                                 <select
                                                                     id="field_type"
                                                                     className="form-control"
-                                                                    {...register('field_type',  { required: { value: true, message: 'Type is required' } })}
+                                                                    {...register('Type',  { required: { value: true, message: 'Question Type is required' } })}
                                                                     onChange={onFieldTypeChange}
                                                                 >
                                                                     <option value="">Select One</option>
@@ -222,118 +206,23 @@ const QuestionForm = () => {
                                                                     })}
                                                                 </select>
                                                                 </div>
-                                                                {errors.field_type && <span className='text-danger'>{errors.field_type.message}</span>}
-                                                                {field_type_selected &&
+                                                                {errors.Type && <span className='text-danger'>{errors.Type.message}</span>}
+                                                                {getValues("Type") &&
                                                                     <div style={{marginTop:"20px", paddingLeft:"20px"}}>
                                                                     <h6 className="black bold">Field preview:</h6>
                                                                     <div>
-                                                                        {renderFields(field_type_selected)}
+                                                                        {renderFields(getValues("Type"))}
                                                                     </div>
                                                                     </div>
                                                                 }
                                                             </div>
-                                                            <div className='form-group' style={{marginBottom:"30px"}}>
-                                                                <label className="bold black">Field Identifier<span style={{color:"red"}}>*</span></label>
-                                                                <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                <select
-                                                                    id="field_type"
-                                                                    className="form-control"
-                                                                    {...register('field_identifier',  { required: { value: true, message: 'Identifier is required' } })} value="Service Request"
-                                                                    disabled
-                                                                >
-                                                                    <option value="Service Request">Service Request</option>
-                                                                    {/*field_identifiers.map((item, i) => {
-                                                                        return(<option key={i} value={item}>{item}</option>)
-                                                                    })*/}
-                                                                </select>
-                                                                </div>
-                                                                {errors.field_identifier && <span className='text-danger'>{errors.field_identifier.message}</span>}
-                                                            </div>
                                                             
                                                             <div className='form-group' style={{marginBottom:"30px"}}>
-                                                                <label className="bold black">Field Length (in characters)<span style={{color:"red"}}>*</span></label>
+                                                                <label className="bold black">Answer Length (in characters)<span style={{color:"red"}}>*</span></label>
                                                                 <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                <input {...register('field_length', { required: { value: true, message: 'Length is required' } })} className='inputLogin' type="number" min="1"/>
+                                                                <input {...register('Length', { required: { value: true, message: 'Length is required' } })} className='inputLogin' type="number" min="1"/>
                                                                 </div>
-                                                                {errors.field_length && <span className='text-danger'>{errors.field_length.message}</span>}
-                                                            </div>
-
-                                                            <div className='form-group' style={{marginBottom:"30px"}}>
-                                                                <label className="bold black">Field Values {is_dropdown && <span style={{color:"red"}}>*</span>}</label><i style={{fontSize:"16px", color:"black"}}>--> separate multiple items with commas (",")</i>
-                                                                <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                <input {...register('field_source', {required: { value: is_dropdown, message: 'Values is required' } })} className='inputLogin' type="text"/>
-                                                                </div>
-                                                                {errors.field_source && <span className='text-danger'>{errors.field_source.message}</span>}
-                                                            </div>
-                                                            <div className='form-group'>
-                                                                <h6 className="bold black">Behavior</h6>
-                                                                <div className="row" style={{marginTop:"10px"}}>
-                                                                    <div className="col-md-6">
-                                                                        <h6 className="black">For Agents</h6>
-                                                                        <div className="form-check">
-                                                                            <input className="form-check-input" type="checkbox" value="" id="check1" {...register("for_agent_required_when_submitting_the_form")}/>
-                                                                            <label className="black" for="check1">
-                                                                                Required When Submitting The Form
-                                                                            </label>
-                                                                        </div>
-                                                                       {/* <div className="form-check">
-                                                                        <input className="form-check-input" type="checkbox" value="" id="check1" {...register("for_agent_required_when_closing_the_ticket")}/>
-                                                                            <label className="black" for="check1">
-                                                                                Required When Closing The Ticket
-                                                                            </label>
-                                                                </div>*/}
-                                                                    </div>
-                                                                    <div className="col-md-6">
-                                                                        <h6 className="black">For Requesters</h6>
-                                                                        {/*<div className="form-check">
-                                                                            <input className="form-check-input" type="checkbox" value="" id="check1" {...register("for_requester_displayed_to_requester")}/>
-                                                                                <label className="black" for="check1">
-                                                                                    Displayed To Requester
-                                                                                </label>
-                                                                        </div>
-                                                                        <div className="form-check">
-                                                                            <input className="form-check-input" type="checkbox" value="" id="check1" {...register("for_requester_requester_can_edit")}/>
-                                                                                <label className="black" for="check1">
-                                                                                    Requester Can Edit
-                                                                                </label>
-                                                                </div>*/}
-                                                                        <div className="form-check">
-                                                                        <input className="form-check-input" type="checkbox" value="" id="check1" {...register("for_requester_required_when_submitting_the_form")}/>
-                                                                                <label className="black" for="check1">
-                                                                                    Required When Submitting The Form
-                                                                                </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                            </div>  
-                                                            <div className='form-group'>
-                                                                <h6 className="bold black">Field Label</h6>
-                                                                <div className="row" style={{marginTop:"10px"}}>
-                                                                    <div className="col-md-6">
-                                                                        <h6 className="black">For Agents</h6>
-                                                                        <div className='form-group'>
-                                                                            <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                            <input className='inputLogin' {...register('label_for_agent', { required: { value: true, message: 'Label For Agent is required' } })} />
-                                                                            </div>
-                                                                            {errors.label_for_agent && <span className='text-danger'>{errors.label_for_agent.message}</span>}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="col-md-6">
-                                                                        <h6 className="black">For Requesters</h6>
-                                                                        <div className='form-group'>
-                                                                            <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
-                                                                            <input className='inputLogin' {...register('label_for_requester', { required: { value: true, message: 'Label For Requester is required' } })} />
-                                                                            </div>
-                                                                            {errors.label_for_requester && <span className='text-danger'>{errors.label_for_requester.message}</span>}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                            </div> 
-                                                            <div className='form-group' style={{display:"flex", alignItems:"center", columnGap:"15px", marginTop:"10px"}}>
-                                                                <label className="black bold">Set Field as Active?</label>
-                                                                <InputSwitch checked={field_enabled} onChange={(e) => setFieldEnabled(!field_enabled)} />
+                                                                {errors.Length && <span className='text-danger'>{errors.Length.message}</span>}
                                                             </div>
                                                         </>
                                                     </div>

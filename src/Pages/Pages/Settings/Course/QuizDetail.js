@@ -92,7 +92,7 @@ const QuizDetail = () => {
                             <Overlay display={state.processing} />
                             <div className="d-flex" style={{justifyContent:"space-between"}}>
                                 <h5 className="black bold">List of Questions</h5>
-                                <div style={{display:"flex", color:"#CD5700", columnGap:"5px", cursor:"pointer", fontSize:"1rem", margin:"0 1.5rem 0.9rem 0rem"}} onClick={()=> navigate(`/chapter-form/${null}/${course_id}`)}>
+                                <div style={{display:"flex", color:"#CD5700", columnGap:"5px", cursor:"pointer", fontSize:"1rem", margin:"0 1.5rem 0.9rem 0rem"}} onClick={()=> navigate(`/question-form/${null}/${quiz_id}/${course_id}`)}>
                                             <div style={{marginLeft:"auto"}}><b>+</b> Add a new question</div>
                                 </div>
                             </div>

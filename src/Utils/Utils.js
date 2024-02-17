@@ -49,9 +49,9 @@ export const uuid = () => {
 };
 
 export const renderFields = (field_type) => {
-    if(field_type == "text-single") return <input type="text" disabled placeholder = "Single Input" style={{fontSize:"14px"}}/>
+    if(field_type == "single-text") return <input type="text" disabled placeholder = "Single Input" style={{fontSize:"14px"}}/>
     else if(field_type == "number") return <input type="number" disabled placeholder = "Number Input" style={{fontSize:"14px"}}/>
-    else if(field_type == "text-multiple") return <textarea disabled placeholder = "Text Area" style={{fontSize:"14px"}}/>
+    else if(field_type == "multiple-text") return <textarea disabled placeholder = "Text Area" style={{fontSize:"14px"}}/>
     else if(field_type == "dropdown-single") return <select disabled><option style={{fontSize:"14px"}}>Select one</option></select>
     else if(field_type == "dropdown-multiple") return <select disabled><option style={{fontSize:"14px"}}>Select many</option></select>
     else if(field_type == "datetime") return <img src={datetime_input} style={{width:"300px"}}/>
