@@ -19,11 +19,19 @@ const QuestionForm = () => {
     const [state, setState] = useState({ processing : false });
     const navigate = useNavigate();
     
-    const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ defaultValues: {} });
+    const { register, watch, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ defaultValues: {
+        Name: "",
+        Type: "",
+        Length: 0,
+        Choices:[]
+    }});
+
+    const selectedType = watch("Type");
 
     const onFieldTypeChange = (e) => {
         setValue("Type", e.target.value);
     }
+    
 
     useEffect(() => {
         if(userInfo.access){
@@ -91,7 +99,6 @@ const QuestionForm = () => {
         }
         let user_input = Object.assign({}, data, {ChapterQuizID: quiz_id});
         user_input = urlEncodeData(user_input)
-        console.log(user_input);
         if(!question_id || question_id == "null"){
             createQuestion(user_input).then(res => {
                 if(res.status == 201){
@@ -206,16 +213,17 @@ const QuestionForm = () => {
                                                                     })}
                                                                 </select>
                                                                 </div>
-                                                                {errors.Type && <span className='text-danger'>{errors.Type.message}</span>}
-                                                                {getValues("Type") &&
+                                                               
+                                                                {selectedType &&
                                                                     <div style={{marginTop:"20px", paddingLeft:"20px"}}>
                                                                     <h6 className="black bold">Field preview:</h6>
                                                                     <div>
-                                                                        {renderFields(getValues("Type"))}
+                                                                        {renderFields(selectedType)}
                                                                     </div>
                                                                     </div>
                                                                 }
                                                             </div>
+                                                             {errors.Type && <span className='text-danger'>{errors.Type.message}</span>}
                                                             
                                                             <div className='form-group' style={{marginBottom:"30px"}}>
                                                                 <label className="bold black">Answer Length (in characters)<span style={{color:"red"}}>*</span></label>
