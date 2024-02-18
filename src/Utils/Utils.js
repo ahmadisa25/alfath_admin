@@ -51,9 +51,15 @@ export const uuid = () => {
 export const renderFields = (field_type) => {
     if(field_type == "single-text") return <input type="text" disabled placeholder = "Single Input" style={{fontSize:"14px"}}/>
     else if(field_type == "number") return <input type="number" disabled placeholder = "Number Input" style={{fontSize:"14px"}}/>
+    else if(field_type == "single-choices") return <div style={{display:"flex", flexDirection:"column"}}>
+        <label><input className="radio-label" type="radio" id="html" name="fav_language" value="Opsi 1"/>Option 1</label>
+        <label><input className="radio-label" type="radio" id="html" name="fav_language" value="Opsi 1"/>Option 2</label>
+        <label><input className="radio-label" type="radio" id="html" name="fav_language" value="Opsi 1"/>Option 3</label>
+    </div>
     else if(field_type == "multiple-text") return <textarea disabled placeholder = "Text Area" style={{fontSize:"14px"}}/>
     else if(field_type == "dropdown-single") return <select disabled><option style={{fontSize:"14px"}}>Select one</option></select>
     else if(field_type == "dropdown-multiple") return <select disabled><option style={{fontSize:"14px"}}>Select many</option></select>
+    else if(field_type == "multiple-choices") return <select disabled><option style={{fontSize:"14px"}}>Select many</option></select>
     else if(field_type == "datetime") return <img src={datetime_input} style={{width:"300px"}}/>
     else if(field_type == "checkbox") return  <div className="form-group">
         <label>

@@ -224,7 +224,16 @@ const QuestionForm = () => {
                                                                 }
                                                             </div>
                                                              {errors.Type && <span className='text-danger'>{errors.Type.message}</span>}
-                                                            
+
+                                                            {(selectedType == "single-choices" || selectedType == "multiple-choices") && 
+                                                             <div className='form-group' style={{marginBottom:"30px"}}>
+                                                                <label className="bold black">Field Values <span style={{color:"red"}}>*</span></label><i style={{fontSize:"16px", color:"black"}}>--> separate multiple items with commas (",")</i>
+                                                                <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>
+                                                                <input type="text" {...register('Choices', {required: { value: true, message: 'Choices are required' } })} className='inputLogin' type="text" maxLength="500"/>
+                                                                </div>
+                                                                {errors.Choices && <span className='text-danger'>{errors.Choices.message}</span>}
+                                                            </div>
+                                                            }
                                                             <div className='form-group' style={{marginBottom:"30px"}}>
                                                                 <label className="bold black">Answer Length (in characters)<span style={{color:"red"}}>*</span></label>
                                                                 <div style={{ border: 'solid 1px #ccc', borderRadius: 4 }}>

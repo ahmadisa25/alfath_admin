@@ -1643,6 +1643,11 @@ a.disabled {
     stroke-width: 1;
 }
 
+.radio-label{
+    margin-right:10px;
+    margin-left:10px;
+}
+
 .th-no-border {
     border-bottom: none !important;
     border-top: none !important;
