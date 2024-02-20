@@ -7,7 +7,7 @@ import Overlay from '../../../../Components/Overlay';
 import moment from 'moment';
 import 'moment/locale/id';
 import ReactHtmlParser from 'react-html-parser';
-
+import Select from 'react-select';
 import {
     useParams
 } from "react-router-dom";
@@ -130,13 +130,46 @@ const QuizDetail = () => {
           })
     };
 
-    const renderQuestion = (question) => {
+    const renderQuestion = (question, index) => {
         let question_rendered = null;
         if(question.Type == "single-text") {
             question_rendered = 
-            <div className='form-group'>
-                <label className="black"><b>{capitalize(question.Title)}</b></label>
+            <div className='form-group' style={{width:"70%"}}>
+                <label className="black"><b>{index}. {capitalize(question.Title)}</b></label>
                 <input maxLength={question.Length} className='form-control' autoComplete="off" placeholder={"Jawab disini"}/>
+            </div>;
+        } else if(question.Type == "multiple-text") {
+            question_rendered = 
+            <div className='form-group' style={{width:"70%"}}>
+                <label className="black"><b>{index}. {capitalize(question.Title)}</b></label>
+                <textarea maxLength={question.Length} className='form-control' autoComplete="off" placeholder={"Jawab disini"} rows="10"/>
+            </div>;
+        } else if(question.Type == "multiple-choices") {
+            let choices = [];
+            if(question.Choices){
+                let split_choices = question.Choices.split(",")
+                split_choices.forEach((item) => choices.push({label:item, value:item}))
+            }
+
+            question_rendered = 
+            <div className='form-group'>
+                <label className="black"><b>{index}. {capitalize(question.Title)}</b></label>
+                <Select
+                    options={choices}
+                    placeholder={"Select One"}
+                    isMulti
+                />
+            </div>;
+        } else if(question.Type == "single-choices") {
+            let choices = [];
+            if(question.Choices){
+                choices = question.Choices.split(",");
+            }
+
+            question_rendered = 
+            <div className='form-group'>
+                <label className="black"><b>{index}. {capitalize(question.Title)}</b></label>
+                <div style={{display:"flex", flexDirection:"column"}}>{choices?.length > 0 && choices.map(item => <label><input className="radio-label" type="radio" id="html" name="fav_language" value={item}/>{item}</label>)}</div>
             </div>;
         }
         return (
@@ -193,7 +226,7 @@ const QuizDetail = () => {
                                 </div>
                             </div>
                             <div style={{marginTop:"15px"}}>
-                                {quiz_data?.Questions && quiz_data.Questions.map(item => renderQuestion(item))}
+                                {quiz_data?.Questions && quiz_data.Questions.map((item, index) => renderQuestion(item, index+1))}
                             </div>
                         </div>
                     </div>
