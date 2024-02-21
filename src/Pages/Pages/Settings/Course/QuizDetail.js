@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import Overlay from '../../../../Components/Overlay';
 import moment from 'moment';
 import 'moment/locale/id';
-import ReactHtmlParser from 'react-html-parser';
+import { MdOutlineModeEdit } from 'react-icons/md';
 import Select from 'react-select';
 import {
     useParams
@@ -19,7 +19,6 @@ import { BsTrashFill } from 'react-icons/bs';
 
 const { $ } = window;
 const QuizDetail = () => {
-    const UPLOAD_DIR = process.env.REACT_APP_IMAGE_URL;
     let { userInfo } = useSelector(state => state.auth);
     const { quiz_id, course_id } = useParams();
     moment.locale('id');
@@ -176,8 +175,13 @@ const QuizDetail = () => {
             <>
                 <div style={{display:"flex", justifyContent:"space-between"}}>
                     {question_rendered}
-                    <div onClick={(e) => onRemoveQuestion(question.ID)} style={{display: "flex", cursor:"pointer"}}>
-                        <div style={{color:"red"}}><BsTrashFill/>&nbsp;<span style={{fontSize:"12px"}}>Delete</span></div>
+                    <div style={{display:"flex", columnGap:"15px"}}>
+                        <div style={{display: "flex", cursor:"pointer"}} onClick={(e) => navigate(`/question-form/${question.ID}/${quiz_id}/${course_id}`)}>
+                            <div style={{color:"#0099C3"}}><MdOutlineModeEdit/>&nbsp;<span style={{fontSize:"12px"}}>Edit</span></div>
+                        </div>
+                        <div onClick={(e) => onRemoveQuestion(question.ID)} style={{display: "flex", cursor:"pointer"}}>
+                            <div style={{color:"red"}}><BsTrashFill/>&nbsp;<span style={{fontSize:"12px"}}>Delete</span></div>
+                        </div>
                     </div>
                 </div>
             </>

@@ -34,7 +34,7 @@ const QuestionForm = () => {
     
 
     useEffect(() => {
-        if(userInfo.access){
+        /*if(userInfo.access){
             if(userInfo.access.settings){
                 if(!userInfo.access.settings.can_create && !userInfo.access.settings.can_edit) {
                     Swal.fire({
@@ -43,9 +43,10 @@ const QuestionForm = () => {
                         text: "You're not allowed to access that page!"
                      })
                     navigate('/');
-                }
+                }*/
 
                 if(question_id && question_id != "null"){
+                    console.log(question_id);
                     //if(permissionCheck(userInfo, "settings", "update")){
                         getQuestion(question_id).then(res => {
                             if(res.data.Status == 200){
@@ -77,8 +78,8 @@ const QuestionForm = () => {
                         navigate('/service-request-fields');
                     }*/
                 }
-            }
-        }
+            //}
+        //}
         
     },[]);
 
