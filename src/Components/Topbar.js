@@ -63,13 +63,13 @@ const Topbar = () => {
                 <div className='col-md-6' style={{display: "flex", columnGap:"2em"}}>
                     <div style={{display:"flex", alignItems:"center", marginLeft: "auto"}}>
                         <div style={{marginRight: "10px"}}>
-                            <span className='black block'>{userInfo.fullname}</span>
+                            <span className='black block'>{userInfo.name}</span>
                             <span className='block'>{userInfo.username}</span>
                         </div>
 
                         <div style={{display:"flex", alignItems:"center",}}>
                             <div className="rounded-circle" style={{backgroundColor:"#ECECEC", cursor:"pointer"}} onClick={() => {setProfileOpen(!profile_open); if(notification_open) setNotificationOpen(!notification_open);}}>
-                            {(!userInfo.profpic || is_null_url) && <InitialIcon name={userInfo.fullname} icon_width={40} icon_height={40} icon_radius={20} text_size={22} ></InitialIcon>}
+                            {(!userInfo.profpic || is_null_url) && <InitialIcon name={userInfo.name} icon_width={40} icon_height={40} icon_radius={20} text_size={22} ></InitialIcon>}
                                 {userInfo.profpic && !is_null_url && <img className="icons-topbar rounded-circle" src={tempImageName}/>}
                                 {profile_open &&
                                     <div className='profile-after' onBlur={() => {setProfileOpen(false); setNotificationOpen(false);}} tabIndex={profile_open ? -1 : 0}>

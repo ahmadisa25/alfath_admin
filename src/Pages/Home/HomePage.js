@@ -163,7 +163,7 @@ function HomePage() {
       };
     
 
-    useEffect(()=>{
+    /*useEffect(()=>{
         if(userInfo && userInfo.role_name){
             if(!permissionCheck(userInfo, "dashboard", "view")){
                 Swal.fire({
@@ -176,7 +176,7 @@ function HomePage() {
         } else {
             logoutUser(userInfo.role_name);
         }
-    },[])
+    },[])*/
 
     const onCloseServiceCategory = (e) => {
         e.preventDefault();

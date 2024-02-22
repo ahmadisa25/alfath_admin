@@ -1,7 +1,6 @@
 import React  from 'react';
 import { BrowserRouter, Routes, Route, Navigate, matchPath } from 'react-router-dom';
 import LayoutScreen from '../../Pages/Layout/LayoutScreen';
-import User from '../../Pages/User/User';
 import { useSelector } from 'react-redux';
 import HomePage from '../../Pages/Home/HomePage';
 import NotFound from '../../Pages/Error/NotFound';
@@ -22,8 +21,6 @@ import QuizForm from '../../Pages/Pages/Settings/Course/QuizForm';
 import QuestionForm from '../../Pages/Pages/Settings/Course/QuestionForm';
 
 const routeList = [
-  '/users',
-  '/roles',
   '/profile'
 ];
 
@@ -58,7 +55,6 @@ const ToHome = () => {
 
 const menus = {
   user: [
-    <Route path="/users" element={<User />} />,
     <Route path="/users/profile" element={<Profile />} />
   ],
 }

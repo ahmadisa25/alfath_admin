@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import store from './Redux/Store/Store';
 import axios from 'axios';
 import { ACTION_LOGIN, ACTION_LOGOUT } from './Redux/Action/AuthAction';
-import { getRoleById } from './Service/UserService';
 import { urlEncodeData } from './Utils/Utils';
 
 const { $ } = window;
@@ -56,12 +55,6 @@ axios.interceptors.response.use(ok200 => ok200, (error) => {
           //userInfo.profpic = tempImageName;
           axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
           USERTOKEN.set(access_token, refresh_token);
-
-          if (userInfo.role_id) {
-            const response = await getRoleById(userInfo.role_id);
-            //const { privileges } = response.data;
-            //userInfo.privileges = privileges;
-          }
           store.dispatch({ type: ACTION_LOGIN, userInfo });
           failRequests.map(callback => callback(access_token));
         }
@@ -96,7 +89,7 @@ if (access_token) {
   const userInfo = JSON.parse(atob(payload));
   const profpic_base_url = process.env.REACT_APP_IMAGE_URL +"profpic/";
   const tempImageName = localStorage.getItem('image_name') || `${profpic_base_url}${userInfo.profpic}`;
-  userInfo.profpic = tempImageName;
+  //userInfo.profpic = tempImageName;
   store.dispatch({ type: ACTION_LOGIN, userInfo });
 } else {
   store.dispatch({ type: ACTION_LOGOUT });

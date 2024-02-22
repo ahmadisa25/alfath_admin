@@ -20,11 +20,17 @@ const AuthReducer = (state = init, action) => {
             return { ...state, refreshPath: '' };
         case UPDATE_IMAGE:
             const profpic_base_url = process.env.REACT_APP_IMAGE_URL +"profpic/";
-            localStorage.setItem('image_name',  `${profpic_base_url}${action.tempUrl}`);
-            const _userInfo = { ...state.userInfo, ['profpic']: `${profpic_base_url}${action.tempUrl}` }
-            return updateObject(state, {
-                userInfo: _userInfo
-            });
+            if(action.tempUrl){
+                localStorage.setItem('image_name',  `${profpic_base_url}${action.tempUrl}`);
+                const _userInfo = { ...state.userInfo, ['profpic']: `${profpic_base_url}${action.tempUrl}` }
+                return updateObject(state, {
+                    userInfo: _userInfo
+                });
+            }
+
+
+  
+         
         default:
             return state;
     }

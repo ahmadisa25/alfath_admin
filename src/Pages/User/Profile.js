@@ -3,8 +3,6 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import InitialIcon from '../../Components/InitialIcon';
-import { uploadProfilePhoto } from '../../Service/UserService';
-import { updateImage } from '../../Redux/Action/AuthAction';
 import { useDispatch } from 'react-redux';
 import { includes } from 'lodash';
 
@@ -39,26 +37,6 @@ function Profile() {
                 const formData = new FormData();
             formData.append("File", file);
                 formData.append("img_upload", photo_obj.img_upload);
-                uploadProfilePhoto(formData).then(res => {
-                    if(res.status == 200){
-                        Swal.fire({
-                            icon: 'success',
-                            title: "File upload success!"
-                        }).then(() => {
-                           dispatch(updateImage(res.data.data.image_url));
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: "File upload error. Please recheck your file type or file size!"
-                        }); 
-                    }
-                }).catch(err => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: "File upload error"
-                    }); 
-                });
             } else{
                 Swal.fire({
                     icon: 'error',
