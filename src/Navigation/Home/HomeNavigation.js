@@ -19,6 +19,7 @@ import ChapterForm from '../../Pages/Pages/Settings/Course/ChapterForm';
 import MaterialForm from '../../Pages/Pages/Settings/Course/MaterialForm';
 import QuizForm from '../../Pages/Pages/Settings/Course/QuizForm';
 import QuestionForm from '../../Pages/Pages/Settings/Course/QuestionForm';
+import Answers from '../../Pages/Pages/Settings/Course/Answers';
 
 const routeList = [
   '/profile'
@@ -83,6 +84,7 @@ const HomeNavigation = () => {
             <Route path="/quiz/:quiz_id/:course_id" element={<QuizDetail/>} />
             <Route path="/quiz-form/:quiz_id/:chapter_id/:course_id" element={<QuizForm/>} />
             <Route path="/course/:course_id" element={<CourseDetail />} />
+            <Route path="/answers/:quiz_id" element={<Answers />} />
             <Route path="/announcements" element={<AnnouncementSettings />} />
             <Route path="/announcement-form" element={<AnnouncementForm />} />
             <Route path="/announcement-form/:announcement_id" element={<AnnouncementForm />} />

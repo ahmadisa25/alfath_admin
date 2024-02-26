@@ -98,6 +98,9 @@ const Item = ({ item, deliverItem, item_depth, item_name_key, item_class, on_del
                 <div onClick={(e) => navigate(`/quiz/${item.ID}/${course_id}`)}>
                     <div style={{color:"green"}}><IoListCircle /><span style={{fontSize:"12px"}}>Setup Questions</span></div>
                 </div>
+                <div onClick={(e) => navigate(`/answers/${item.ID}`)}>
+                    <div style={{color:"green"}}><IoListCircle /><span style={{fontSize:"12px"}}>Answers</span></div>
+                </div>
                 <div onClick={(e) => navigate(`/quiz-form/${item.ID}/${item.CourseChapterID}/${course_id}`)}>
                     <div style={{color:"#0099C3"}}><MdOutlineModeEdit/><span style={{fontSize:"12px"}}>Edit</span></div>
                 </div>
