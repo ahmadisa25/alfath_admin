@@ -6,7 +6,6 @@ import { isObjectEmpty, permissionCheck, truncateToEllipsis } from '../../Utils/
 import { useNavigate } from 'react-router-dom';
 import { Bar, Pie } from 'react-chartjs-2';
 import { logoutUser } from '../../Service/UserService';
-import IncidentCategories from '../Incident/CategoryContents';
 
 import DashboardCard from '../../Components/DashboardCard';
 import {
@@ -254,7 +253,6 @@ function HomePage() {
                                                     </button>
                                                 </div>
                                                 <div className="modal-body">
-                                                    <IncidentCategories sendCategoryToParent={onSetCategory}/>
                                                 </div>
                                             </div>
                                         </div>

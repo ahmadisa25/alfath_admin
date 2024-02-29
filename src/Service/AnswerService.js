@@ -3,7 +3,13 @@ import { handleResponse } from './HelperService';
 
 
 const getAllAnswers = (payload, onSuccess, onError) => {
-    const response = axios.get("/quiz-answer-all/", payload);
+    let response = axios.get("/quiz-answer-all/");
+    if (payload) {
+        let filter_string = "";
+        if(payload.filter){
+            response = axios.get(`/quiz-answer-all?filter=${payload.filter}`);
+        }
+    }
     return handleResponse(response, onSuccess, onError);
 }
 
