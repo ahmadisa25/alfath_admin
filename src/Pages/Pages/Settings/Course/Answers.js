@@ -31,7 +31,7 @@ const Answers = () => {
         },
     });
 
-    const propsTable = { columns: columns, getData: tableGetData(), order: 'name', direction: 'asc', showCheckbox: true, minTableWidth:"80%"};
+    const propsTable = { columns: columns, getData: tableGetData(), order: 'name', direction: 'asc', showCheckbox: false, showIndex: false, minTableWidth:"80%"};
     return (
         <>
             <div className="content-wrapper">

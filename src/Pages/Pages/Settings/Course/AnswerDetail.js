@@ -1,13 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import {getAllAnswers} from '../../../../Service/AnswerService';
+import {getAllAnswers, submitFinalGrade} from '../../../../Service/AnswerService';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import { urlEncodeData } from '../../../../Utils/Utils';
 
 const AnswerDetail = () => {
     const navigate = useNavigate();
-
+    let { userInfo } = useSelector(state => state.auth);
     const {quiz_id, student_id} = useParams();
     const [answers, setAnswers] = useState([]);
+    const [final_grade, setFinalGrade] = useState(0);
+    const [state, setState] = useState({ 
+        processing : false, 
+    });
+
+    const onSubmitGrade = () => {
+        if(final_grade < 0 || final_grade > 100) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "Final grade must be between 0 and 100!"
+             })
+            return;
+        }
+
+        let user_input = Object.assign({}, {StudentID:student_id, QuizID:quiz_id, FinalGrade:final_grade, GradedByID:userInfo.id});
+        user_input = urlEncodeData(user_input);
+        submitFinalGrade(user_input).then(res => {
+            if(res.status == 201){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: "Grade data has successfully been submitted!"
+                 }).then(_ => {
+                    navigate(`/answers/${quiz_id}`);
+                 })
+             
+            }
+        }).catch(({response: {data}}) => {
+            setState({...state, processing: false})
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: data && data.Message || "There's an error with your request. Please try again or contact support!"
+             }).then(_ => {
+                setState({...state, processing: false})
+             })
+        })
+    }
 
     useEffect(() => {
         getAllAnswers({filter:`quiz_id:${quiz_id},student_id:${student_id}`}).then(res => {
@@ -40,6 +81,10 @@ const AnswerDetail = () => {
                         <div>
                             <div className="card shadow mb-4">
                                 <div className="card-body">
+                                <div style={{display:"flex", alignItems:"center", cursor: "pointer", marginBottom:"10px", fontSize:"16px", color:"#CD5700"}} onClick={() => navigate(`/answers/${quiz_id}`)}>
+                                        <div><span class="material-icons" style={{fontSize:"18px", marginTop:"5px"}}>arrow_back</span></div>
+                                        <div>&nbsp; Back to Answers List</div>
+                                </div>
                                 <h5 className="black bold" style={{marginBottom:"30px"}}>List of Answers</h5>
                                 <table className="table table-condensed" style={{ marginTop: 16, borderBottom:"1px solid black", marginBottom:35}}>
                                     <thead>
@@ -61,15 +106,16 @@ const AnswerDetail = () => {
                                     )}
                                     </tbody>
                                     </table>
-                                    <div style={{display:"flex", marginLeft:"6px"}}>
-                                        <div className='form-group' style={{width:"30%", display:"flex", columnGap:"15px"}}>
-                                            <label htmlFor='FinalGrade' className="black"><b>Final Grade</b> <span style={{color:"red"}}>*</span></label>
+                                    <div style={{marginLeft:"6px", marginTop:"40px"}}>
+                                        <div className='form-group' style={{display:"flex", columnGap:"15px", alignItems:"center", marginBottom:0}}>
+                                            <label htmlFor='FinalGrade' className="black" style={{marginBottom:0}}><b>Final Grade</b> <span style={{color:"red"}}>*</span></label>
                                             <div className='d-flex align-items-center' style={{columnGap:"20px"}}>
                                                 <div>
-                                                    <input type="number" className="form-control" style={{width:"25%"}} id="FinalGrade" placeholder="60" max="100" autoComplete="off"/>
+                                                    <input type="number" className="form-control" style={{width:"100%", fontSize:"0.2rem !important"}} id="FinalGrade" min="0" max="100" autoComplete="off" onChange={(e) => setFinalGrade(e.target.value)} value={final_grade}/>
                                                 </div>
                                             </div>
                                         </div>
+                                            <button onClick={onSubmitGrade} className="btn tawny" style={{color:"white", fontSize:"0.65rem", marginTop:"10px"}}>Submit</button>
                                     </div>
                                 </div>
                             </div>
