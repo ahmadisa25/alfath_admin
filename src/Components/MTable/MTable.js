@@ -10,7 +10,6 @@ import TableData from './TableData';
 import AddButton from './AddButton';
 import PropertiesButton from './PropertiesButton';
 import SelectButton from './SelectButton';
-import {TiWarningOutline} from 'react-icons/ti';
 import TablePlaceholder from './TablePlaceholder';
 
 const $ = window.$;
@@ -55,7 +54,7 @@ const MTable = forwardRef(({ columns, onAddData, showIndex, showPaginationCounte
       delete _paginatpr.refresh;
       getData && getData(_paginatpr).then(res => {
         clearTimeout(loadTimeout);
-        const { data: { Data, Total } } = res;
+        const { data: { Data, Total} } = res;
         setState({ data: Data, total: Total, processing: false });
       }).catch(err => {
         clearTimeout(loadTimeout);
