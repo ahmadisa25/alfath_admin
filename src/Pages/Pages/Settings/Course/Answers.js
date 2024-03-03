@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import MTable from '../../../../Components/MTable/MTable';
-import {getAllAnswers} from '../../../../Service/AnswerService';
+import {getAllAnswersDistinct} from '../../../../Service/AnswerService';
 import { useNavigate, useParams } from 'react-router-dom';
 import ActionButton from '../../../../Components/MTable/ActionButton';
 import { FaEye } from 'react-icons/fa';
@@ -10,7 +10,7 @@ const Answers = () => {
     const navigate = useNavigate();
 
     const tableGetData = () => {
-        return (params) => getAllAnswers({...params, filter:`quiz_id:${quiz_id}`});
+        return (params) => getAllAnswersDistinct({...params, filter:`chapter_quiz_id:${quiz_id}`});
     }
 
     const columns = [
@@ -25,7 +25,7 @@ const Answers = () => {
         render: item => {
             return (
                 <div>
-                        <ActionButton icon={<FaEye/>} link_color="#0099C3" click_action={() => navigate(`/answer/${item.quiz_id}/${item.student_id}`)} text="View"/>
+                        <ActionButton icon={<FaEye/>} link_color="#0099C3" click_action={() => navigate(`/answer/${quiz_id}/${item.student_id}`)} text="View"/>
                 </div>
             );
         },
