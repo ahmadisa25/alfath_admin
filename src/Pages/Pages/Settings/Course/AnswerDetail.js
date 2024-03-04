@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {getAllAnswers, submitFinalGrade} from '../../../../Service/AnswerService';
+import {getAllAnswers, getStudentQuiz, submitFinalGrade} from '../../../../Service/AnswerService';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ const AnswerDetail = () => {
     const {quiz_id, student_id} = useParams();
     const [answers, setAnswers] = useState([]);
     const [final_grade, setFinalGrade] = useState(0);
+    const [quiz_data, setQuizData] = useState(null);
     const [state, setState] = useState({ 
         processing : false, 
     });
@@ -52,16 +53,29 @@ const AnswerDetail = () => {
 
     useEffect(() => {
         getAllAnswers({filter:`quiz_id:${quiz_id},student_id:${student_id}`}).then(res => {
-            setAnswers(res.data.Data)
+            if(res.data.Status == 200) {
+                setAnswers(res.data.Data)
+            }
+
         }).catch(err => {
-            //setState({...state, processing: false})
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
                 text: "Failed to get answers data!"
-             })/*.then(_ => {
-                setState({...state, processing: false})
-             })*/
+             })
+        })
+
+        getStudentQuiz(student_id).then(res => {
+            if(res.data.Status == 200){
+                setFinalGrade(res.data.Data.FinalGrade)
+                setQuizData(res.data.Data)
+            }
+        }).catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "Failed to get quiz data!"
+             })
         })
     }, []);
     return (
@@ -85,7 +99,8 @@ const AnswerDetail = () => {
                                         <div><span class="material-icons" style={{fontSize:"18px", marginTop:"5px"}}>arrow_back</span></div>
                                         <div>&nbsp; Back to Answers List</div>
                                 </div>
-                                <h5 className="black bold" style={{marginBottom:"30px"}}>List of Answers</h5>
+                                <h5 className="black bold">List of Answers</h5>
+                                {answers?.length > 0 && <div>Student: {answers[0].name}</div>}
                                 <table className="table table-condensed" style={{ marginTop: 16, borderBottom:"1px solid black", marginBottom:35}}>
                                     <thead>
                                         <tr>
@@ -111,11 +126,11 @@ const AnswerDetail = () => {
                                             <label htmlFor='FinalGrade' className="black" style={{marginBottom:0}}><b>Final Grade</b> <span style={{color:"red"}}>*</span></label>
                                             <div className='d-flex align-items-center' style={{columnGap:"20px"}}>
                                                 <div>
-                                                    <input type="number" className="form-control" style={{width:"100%", fontSize:"0.2rem !important"}} id="FinalGrade" min="0" max="100" autoComplete="off" onChange={(e) => setFinalGrade(e.target.value)} value={final_grade}/>
+                                                    <input type="number" className="form-control" style={{width:"100%", fontSize:"0.2rem !important"}} id="FinalGrade" min="0" max="100" autoComplete="off" onChange={(e) => setFinalGrade(e.target.value)} value={final_grade} disabled={quiz_data && quiz_data.FinalGrade}/>
                                                 </div>
                                             </div>
                                         </div>
-                                            <button onClick={onSubmitGrade} className="btn tawny" style={{color:"white", fontSize:"0.65rem", marginTop:"10px"}}>Submit</button>
+                                            <button onClick={onSubmitGrade} className="btn tawny" style={{color:"white", fontSize:"0.65rem", marginTop:"10px"}} disabled={quiz_data && quiz_data.FinalGrade}>Submit</button>
                                     </div>
                                 </div>
                             </div>

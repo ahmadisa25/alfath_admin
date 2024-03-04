@@ -26,7 +26,12 @@ const submitFinalGrade = (payload, onSuccess, onError) => {
     return handleResponse(response, onSuccess, onError);
 }
 
+const getStudentQuiz = (student_id, payload, onSuccess, onError) => {
+    let response = axios.get(`/student-quiz/${student_id}`, payload);
+    return handleResponse(response, onSuccess, onError);
+}
+
 
 export {
-    getAllAnswers, submitFinalGrade, getAllAnswersDistinct
+    getAllAnswers, submitFinalGrade, getAllAnswersDistinct, getStudentQuiz
 };
