@@ -16,6 +16,17 @@ const Answers = () => {
     const columns = [
         { id: 1, title: 'Student Name', field: 'name', sortable: true},
         { id: 2, title: 'Student E-mail', field: 'email', sortable: true},
+        { id: 3, title: 'Final Grade', field: 'email', sortable: true, render: item => {
+            if(item.final_grade){
+                if(item.final_grade > 50){
+                    return <span style={{color:"#32cd32", fontWeight:700}}>{item.final_grade}</span>
+                } else{
+                    return <span style={{color:"red",fontWeight:700}}>{item.final_grade}</span>
+                }
+            } else {
+                return <span style={{color:"orange", fontWeight:700}}>Not Graded</span>
+            }
+        }},
     ]
 
     columns.push({
