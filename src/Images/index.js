@@ -52,4 +52,6 @@ import dashboard from './dashboard.svg';
 import requester_illus from './servicedesk-requester.png';
 import bg_login_servicedesk from './bg_login-servicedesk.png';
 import mosque from './mosque.jpg';
-export { bg_login_servicedesk, bg_login, browse, browse2, service, empty_data, hawk, logo, menu_so, menu_po, menu_delivery, menu_payment,menu_user, menu_transfer, print, qr_code, bglogin, pp_default, trash, approval, productstock, wfh, notification, b2b_portal, modena_logo, chart_up, chart_down, login_bg, data_update, id_flag, rect_red, rect_b2b, data_update_dark, caret_up, chrome_tote, serious_warning, add_circle, modena, datetime_input, mailbox, pending, unresolved, modena_letter, services, service_request, incident, issues, dashboard, requester_illus, microsoft, overdue, group, mosque}
+import course from './course.png';
+import submit from './submit.png';
+export { bg_login_servicedesk, bg_login, browse, browse2, service, empty_data, hawk, logo, menu_so, menu_po, menu_delivery, menu_payment,menu_user, menu_transfer, print, qr_code, bglogin, pp_default, trash, approval, productstock, wfh, notification, b2b_portal, modena_logo, chart_up, chart_down, login_bg, data_update, id_flag, rect_red, rect_b2b, data_update_dark, caret_up, chrome_tote, serious_warning, add_circle, modena, datetime_input, mailbox, pending, unresolved, modena_letter, services, service_request, incident, issues, dashboard, requester_illus, microsoft, overdue, group, mosque, course, submit}

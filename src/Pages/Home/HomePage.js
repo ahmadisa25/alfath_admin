@@ -1,12 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react'
-import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2';
-import { isObjectEmpty, permissionCheck, truncateToEllipsis } from '../../Utils/Utils';
-import { useNavigate } from 'react-router-dom';
-import { Bar, Pie } from 'react-chartjs-2';
-import { logoutUser } from '../../Service/UserService';
-
+import React, { useEffect, useState } from 'react'
 import DashboardCard from '../../Components/DashboardCard';
 import {
     Chart as ChartJS,
@@ -18,11 +11,7 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-import { group, mailbox, pending } from '../../Images';
-import { capitalize } from 'lodash';
-import moment from 'moment';
-
-
+import { group, course, submit } from '../../Images';
   
 ChartJS.register(
     CategoryScale,
@@ -36,131 +25,14 @@ ChartJS.register(
 
 const { $ } = window;
 function HomePage() {
-    const navigate = useNavigate();
-    let { userInfo } = useSelector(state => state.auth);
     const [selected_category, setSelectedCategory] = useState({});
     const [selected_type, setSelectedType] = useState("");
-    const [table_data, setTableData] = useState([]);
-
-    const [overdue_tickets_list, setOverdueTicketsList] = useState([])
 
     const [top_cards_state, setTopCardsState] = useState({
         pending: 0,
         new: 0,
         unresolved: 0
     })
-
-    const [new_tickets, setNewTickets] = useState([]);
-    const [this_week_resolved, setThisWeekResolved] = useState([]);
-    const [achievement_data, setAchievementData] = useState({
-        labels: ['Resolve SLA Achieved', 'Resolve SLA Undone',],
-        datasets: [
-          {
-            data: [12, 19],
-            backgroundColor: [
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-            ],
-            borderColor: [
-              'rgba(54, 162, 235, 1)',
-              'rgba(75, 192, 192, 1)',
-            ],
-            borderWidth: 1,
-          },
-        ],
-      });
-    const [incident_data, setIncidentData] = useState({
-        labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
-        datasets: [
-          {
-            label: 'Top 5 Incident Categories',
-            data: [40, 25, 15, 30, 48], // Provide your data values here
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.6)', // Color for Category A
-              'rgba(54, 162, 235, 0.6)', // Color for Category B
-              'rgba(75, 192, 192, 0.6)', // Color for Category C
-              'rgba(255, 206, 86, 0.6)', 
-              'rgba(0, 0, 0, 0.6)'// Color for Category D
-            ], // Customize the bar color
-          },
-        ],
-      });
-
-      const [request_data, setRequestData] = useState({
-        labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
-        datasets: [
-          {
-            data: [40, 25, 15, 30, 48], // Provide your data values here
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.6)', // Color for Category A
-              'rgba(54, 162, 235, 0.6)', // Color for Category B
-              'rgba(75, 192, 192, 0.6)', // Color for Category C
-              'rgba(255, 206, 86, 0.6)', 
-              'rgba(0, 0, 0, 0.6)'// Color for Category D
-            ], // Customize the bar color
-          },
-        ],
-      });
-
-    const [show_incident_chart, setShowIncidentChart] = useState(false);
-    const selectRef = useRef(null);
-
-    const [show_request_chart, setShowRequestChart] = useState(false);
-    const [show_achievement_chart, setShowAchievementChart] = useState(true);
-    const incident_options = {
-       plugins: {
-        legend: {
-            display: false, // Turn off the labels for datasets
-        },
-      },
-      scales: {
-        x: {
-          reverse: true, // Reverse the x-axis
-          ticks: {
-            callback: function (value, index, values) {
-              // Custom label rendering function that wraps long labels
-              const maxLength = 10; // Set the maximum label length
-              return incident_data.labels[index].length > maxLength ? incident_data.labels[index].substring(0, maxLength) + '...' : incident_data.labels[index];
-            },
-          },
-        },
-        y: {
-          beginAtZero: true, // Start y-axis at zero
-        },
-      },
-      responsive:true,
-    };
-
-    const achievement_options = {
-        maintainAspectRatio: false,
-        responsive: true,
-        height: 257
-    }
-
-    const request_options = {
-        plugins: {
-            legend: {
-                display: false, // Turn off the labels for datasets
-            },
-        },
-        scales: {
-          x: {
-            reverse: true, // Reverse the x-axis
-            ticks: {
-              callback: function (value, index, values) {
-                // Custom label rendering function that wraps long labels
-                const maxLength = 10; // Set the maximum label length
-                return request_data.labels[index].length > maxLength ? request_data.labels[index].substring(0, maxLength) + '...' : request_data.labels[index];
-              },
-            },
-          },
-          y: {
-            beginAtZero: true, // Start y-axis at zero
-          },
-        },
-        responsive:true,
-      };
-    
 
     /*useEffect(()=>{
         if(userInfo && userInfo.role_name){
@@ -292,6 +164,25 @@ function HomePage() {
     <div className="row">
          <div className="col-md-6">
                     <div className="row">
+                    <div className="col-xl-6 col-md-6 mb-4">
+                            <div className="card mb-4" style={{border:"none"}}>
+                                <div
+                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
+                                    <h5 className="m-0 fw-500 color-black43">Prayer Times</h5>
+                                    {/*<div className="dropdown no-arrow">
+                                        <select name='ppn' className='form-control ps-0'>
+                                            <option>Select One</option>
+                                        </select>
+</div>*/}
+                                </div>
+                                <div className="card-body" style={{padding:"0"}}>
+                                    <div className='border-round-light-gray' style={{"padding": "0.5rem", "textAlign": "center"}}>
+                                        <iframe src="https://jadwalsholat.org/jadwal-sholat/monthly.php?id=265" height="642" width="350" frameborder="0"></iframe>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                         <div className="col-xl-6 col-md-6 mb-4">
                             <div className="card mb-4" style={{border:"none"}}>
                                 <div
@@ -305,9 +196,9 @@ function HomePage() {
                                 </div>
                                 <div className="card-body" style={{padding:"0"}}>
                                     <div className='border-round-light-gray' style={{padding:"1rem"}}>
-                                        <div style={{"fontSize":"2rem", "color":"#cd5700", padding:"1rem"}}>يَٰٓأَيُّهَا ٱلنَّاسُ إِنَّ وَعْدَ ٱللَّهِ حَقٌّ ۖ فَلَا تَغُرَّنَّكُمُ ٱلْحَيَوٰةُ ٱلدُّنْيَا ۖ وَلَا يَغُرَّنَّكُم بِٱللَّهِ ٱلْغَرُورُ</div>
+                                        <div style={{"fontSize":"2rem", "color":"#cd5700", padding:"1rem", textAlign:"center"}}>يَٰٓأَيُّهَا ٱلنَّاسُ إِنَّ وَعْدَ ٱللَّهِ حَقٌّ ۖ فَلَا تَغُرَّنَّكُمُ ٱلْحَيَوٰةُ ٱلدُّنْيَا ۖ وَلَا يَغُرَّنَّكُم بِٱللَّهِ ٱلْغَرُورُ</div>
 
-                                        <div style={{padding:"0.5rem", color:"black"}}>"Hai manusia, sesungguhnya janji Allah adalah benar, maka sekali-kali janganlah kehidupan dunia memperdayakan kamu dan sekali-kali janganlah syaitan yang pandai menipu, memperdayakan kamu tentang Allah."
+                                        <div style={{padding:"0.5rem", color:"black", textAlign:"center"}}>"Hai manusia, sesungguhnya janji Allah adalah benar, maka sekali-kali janganlah kehidupan dunia memperdayakan kamu dan sekali-kali janganlah syaitan yang pandai menipu, memperdayakan kamu tentang Allah."
                                         <br/>
                                         <br/>
                                         Referensi : https://tafsirweb.com/7871-surat-fatir-ayat-5.html</div>
@@ -317,25 +208,7 @@ function HomePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xl-6 col-md-6 mb-4">
-                            <div className="card mb-4" style={{border:"none"}}>
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Hadith Reminder</h5>
-                                    {/*<div className="dropdown no-arrow">
-                                        <select name='ppn' className='form-control ps-0'>
-                                            <option>Select One</option>
-                                        </select>
-</div>*/}
-                                </div>
-                                <div className="card-body">
-                                    <div className='border-round-light-gray'>
-                                    {show_request_chart && <Bar data={request_data} options={request_options} />}
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
             {/*<div className="col-xl-3 col-md-3 mb-3">
                 <div className="card  h-100 py-2">
@@ -347,12 +220,17 @@ function HomePage() {
                     
                             <div className="col-xl-12 col-md-12 mb-4">
                                 <div className="card  h-100 py-2">
-                                    <DashboardCard card_title="Total Courses"  stats={top_cards_state.new} explanation_text={"* Number of courses made by our instructors"} icon={mailbox}/>
+                                    <DashboardCard card_title="Total Courses"  stats={top_cards_state.new} explanation_text={"* Number of courses made by our instructors"} icon={course}/>
                                 </div>
                             </div>
                             <div className="col-xl-12 col-md-12 mb-4">
                                 <div className="card  h-100 py-2">
                                     <DashboardCard card_title="Total Students"  stats={top_cards_state.pending} explanation_text={"* Number of students enrolled in the system"} icon={group} />
+                                </div>
+                            </div>
+                            <div className="col-xl-12 col-md-12 mb-4">
+                                <div className="card  h-100 py-2">
+                                    <DashboardCard card_title="Quiz Submissions"  stats={top_cards_state.pending} explanation_text={"* Total of times quizzes are answered"} icon={submit} />
                                 </div>
                             </div>
                     {/*<div className="col-xl-3 col-md-3 mb-3">
