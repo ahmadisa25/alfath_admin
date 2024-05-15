@@ -289,58 +289,39 @@ function HomePage() {
                                 <button type="button" class="btn btn-outline-success db-button">2 Months</button>
                             </div>
     </div>*/}
-                        <div className="row">
-                    
-                    <div className="col-xl-4 col-md-4 mb-4">
-                        <div className="card  h-100 py-2">
-                            <DashboardCard card_title="New Courses"  stats={top_cards_state.new} explanation_text={"* Newly made lessons by our instructors"} icon={mailbox}/>
-                        </div>
-                    </div>
-                    <div className="col-xl-4 col-md-4 mb-4">
-                        <div className="card  h-100 py-2">
-                             <DashboardCard card_title="Total Students"  stats={top_cards_state.pending} explanation_text={"* Number of students enrolled in the system"} icon={group} />
-                        </div>
-                    </div>
-
-                    <div className="col-xl-4 col-md-4 mb-4">
-                        <div className="card  h-100 py-2">
-                                <DashboardCard card_title="% Enrollments Completed"  stats={50} explanation_text={"* Percentage of completed course enrollments"} icon={pending} icon_width={120}/>
-                        </div>
-                    </div>
-                    {/*<div className="col-xl-3 col-md-3 mb-3">
-                        <div className="card  h-100 py-2">
-                                <DashboardCard card_title="Overdue Tickets" stats={top_cards_state.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
-                        </div>
-                    </div>*/}
-                        </div>
-                    </div>
-
-                    </div>
+    <div className="row">
+         <div className="col-md-6">
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-xl-6 col-md-6 mb-4">
                             <div className="card mb-4" style={{border:"none"}}>
                                 <div
                                     className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Top 5 Enrolled Courses</h5>
+                                    <h5 className="m-0 fw-500 color-black43">Qur'an Reminder</h5>
                                     {/*<div className="dropdown no-arrow">
                                         <select name='ppn' className='form-control ps-0'>
                                             <option>Select One</option>
                                         </select>
 </div>*/}
                                 </div>
-                                <div className="card-body">
-                                    <div className='border-round-light-gray'>
-                                    {show_incident_chart && <Bar data={incident_data} options={incident_options} />}
+                                <div className="card-body" style={{padding:"0"}}>
+                                    <div className='border-round-light-gray' style={{padding:"1rem"}}>
+                                        <div style={{"fontSize":"2rem", "color":"#cd5700", padding:"1rem"}}>يَٰٓأَيُّهَا ٱلنَّاسُ إِنَّ وَعْدَ ٱللَّهِ حَقٌّ ۖ فَلَا تَغُرَّنَّكُمُ ٱلْحَيَوٰةُ ٱلدُّنْيَا ۖ وَلَا يَغُرَّنَّكُم بِٱللَّهِ ٱلْغَرُورُ</div>
+
+                                        <div style={{padding:"0.5rem", color:"black"}}>"Hai manusia, sesungguhnya janji Allah adalah benar, maka sekali-kali janganlah kehidupan dunia memperdayakan kamu dan sekali-kali janganlah syaitan yang pandai menipu, memperdayakan kamu tentang Allah."
+                                        <br/>
+                                        <br/>
+                                        Referensi : https://tafsirweb.com/7871-surat-fatir-ayat-5.html</div>
+
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-xl-6 col-md-6 mb-4">
                             <div className="card mb-4" style={{border:"none"}}>
                                 <div
                                     className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Top 5 Finished Courses</h5>
+                                    <h5 className="m-0 fw-500 color-black43">Hadith Reminder</h5>
                                     {/*<div className="dropdown no-arrow">
                                         <select name='ppn' className='form-control ps-0'>
                                             <option>Select One</option>
@@ -355,185 +336,34 @@ function HomePage() {
                                 </div>
                             </div>
                         </div>
-                        {/*<div className="col-md-4">
-                            <div className="card mb-4" style={{border:"none"}}>
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Today's Achievement</h5>
-                                </div>
-                                <div className="card-body">
-                                    <div style={{height:"257px"}}>
-                                    {show_achievement_chart && <Pie data={achievement_data} options={achievement_options}/>}
-                                    </div>
-
-                                </div>
-                            </div>
-</div>*/}
                     </div>
-                    <div className="row">
-                        <div className="col-md-3">
-                            <div className="card mb-4" style={{border:"none"}}>
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">New Tickets</h5>
-                                    {/*<div className="dropdown no-arrow">
-                                        <select name='ppn' className='form-control ps-0'>
-                                            <option>Select One</option>
-                                        </select>
-</div>*/}
-                                </div>
-                                <div className="card-body">
-                                    <div>
-                                        <table className="table table-condensed" style={{borderRadius:0, marginBottom: 0, padding: "0.4rem", fontSize:"16px"}}>
-                                                    <thead>
-                                                        <tr>
-                                                            <th className='b2b-th'>No</th>
-                                                            <th className='b2b-th'>Title</th>
-                                                            <th className='b2b-th'>Type</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {new_tickets.map((item, index) => {
-                                                            let to = item.type == "incident"? "/incident/": "/service-request/";
-                                                            return(
-                                                                <tr className="tr-dashboard" onClick={() => navigate(`${to}${item.ticket_id}`)}>
-                                                                    <td>{index +1}</td>
-                                                                    <td>{truncateToEllipsis(item.title)}</td>
-                                                                    <td>{capitalize(item.type)}</td>
-                                                                </tr>
-                                                            )
-                                                        })}
-                                                       
-                                                    </tbody>
-                                            </table>
-                                    </div>
-
+            {/*<div className="col-xl-3 col-md-3 mb-3">
+                <div className="card  h-100 py-2">
+                        <DashboardCard card_title="Overdue Tickets" stats={top_cards_state.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
+                </div>
+            </div>*/}
+            </div>
+                    <div className="col-md-6">
+                    
+                            <div className="col-xl-12 col-md-12 mb-4">
+                                <div className="card  h-100 py-2">
+                                    <DashboardCard card_title="Total Courses"  stats={top_cards_state.new} explanation_text={"* Number of courses made by our instructors"} icon={mailbox}/>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-md-3">
-                            <div className="card mb-4" style={{border:"none"}}>
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Resolved Tickets This Week</h5>
-                                </div>
-                                <div className="card-body">
-                                    <div>
-                                        <table className="table table-condensed" style={{borderRadius:0, marginBottom: 0, padding: "0.4rem", fontSize:"16px"}}>
-                                                    <thead>
-                                                        <tr>
-                                                            <th className='b2b-th'>No</th>
-                                                            <th className='b2b-th'>Ticket</th>
-                                                            <th className='b2b-th'>Type</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {this_week_resolved.map((item, index) => {
-                                                            let to = item.type == "incident"? "/incident/": "/service-request/";
-                                                            return(
-                                                                <tr className="tr-dashboard" onClick={() => navigate(`${to}${item.ticket_id}`)}>
-                                                                    <td>{index +1}</td>
-                                                                    <td>{truncateToEllipsis(item.title)}</td>
-                                                                    <td>{capitalize(item.type)}</td>
-                                                                </tr>
-                                                            )
-                                                        })}
-                                                    </tbody>
-                                            </table>
-                                    </div>
-
+                            <div className="col-xl-12 col-md-12 mb-4">
+                                <div className="card  h-100 py-2">
+                                    <DashboardCard card_title="Total Students"  stats={top_cards_state.pending} explanation_text={"* Number of students enrolled in the system"} icon={group} />
                                 </div>
                             </div>
+                    {/*<div className="col-xl-3 col-md-3 mb-3">
+                        <div className="card  h-100 py-2">
+                                <DashboardCard card_title="Overdue Tickets" stats={top_cards_state.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
                         </div>
-                        <div className="col-md-3">
-                            <div className="card mb-4" style={{border:"none"}}>
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Overdue Tickets</h5>
-                                    {/*<div className="dropdown no-arrow">
-                                        <select name='ppn' className='form-control ps-0'>
-                                            <option>Select One</option>
-                                        </select>
-</div>*/}
-                                </div>
-                                <div className="card-body">
-                                    <div>
-                                        <table className="table table-condensed" style={{borderRadius:0, marginBottom: 0, padding: "0.4rem", fontSize:"16px"}}>
-                                                    <thead>
-                                                        <tr>
-                                                            <th className='b2b-th'>No</th>
-                                                            <th className='b2b-th'>Title</th>
-                                                            <th className='b2b-th'>Type</th>
-                                                        </tr>   
-                                                    </thead>
-                                                    <tbody>
-                                                        {overdue_tickets_list.map((item, index) => {
-                                                            let to = item.type == "incident"? "/incident/": "/service-request/";
-                                                            return(
-                                                                <tr className="tr-dashboard" onClick={() => navigate(`${to}${item.ticket_id}`)}>
-                                                                    <td>{index +1}</td>
-                                                                    <td>{truncateToEllipsis(item.subject || item.category_name)}</td>
-                                                                    <td>{capitalize(item.ticket_type)}</td>
-                                                                </tr>
-                                                            )
-                                                        })}
-                                                       
-                                                    </tbody>
-                                            </table>
-                                    </div>
+                    </div>*/}
+                    </div>
+    </div>
+                    </div>
 
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-3">
-                            <div className="card mb-4" style={{border:"none"}}>
-                                <div
-                                    className="card-header py-3 d-flex flex-row align-items-center justify-content-between svc-card-header">
-                                    <h5 className="m-0 fw-500 color-black43">Ticket By Category</h5>
-                                    <div className="dropdown no-arrow">
-                                            <select name='type-selector' id ="type-selector" className='sd-form-control ps-0' onChange={(e) => setSelectedType(e.target.value)} ref={selectRef} style={{fontSize:"0.65rem"}}>
-                                                <option value="">Select Type</option>
-                                                <option value="incident">Incident</option>
-                                                <option value="service-request">Service Request</option>
-                                            </select>
-                                        </div>
-                                </div>
-                                <div className="card-body">
-                                    <div>
-                                        {isObjectEmpty(selected_category) && table_data.length <=0 && <div>
-                                            <div style={{textAlign:"center", marginTop:"50px"}}>Please select ticket type first.</div>
-                                        </div>}
-                                        {!isObjectEmpty(selected_category) && table_data.length <=0 && <div>
-                                            <div style={{textAlign:"center", marginTop:"50px"}}>No data for this category.</div>
-                                        </div>}
-                                       {table_data.length > 0 && <table className="table table-condensed" style={{borderRadius:0, marginBottom: 0, padding: "0.4rem", fontSize:"16px"}}>
-                                                    <thead>
-                                                        <tr>
-                                                            <th className='b2b-th'>No</th>
-                                                            <th className='b2b-th'>Ticket</th>
-                                                            <th className='b2b-th'>Requested Date</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {table_data.map((item, index) => {
-                                                            let to = item.type == "incident"? "/incident/": "/service-request/";
-                                                            return(
-                                                                <tr className="tr-dashboard" onClick={() => navigate(`${to}${item.id}`)}>
-                                                                    <td>{index + 1}</td>
-                                                                    <td>{item.subject ? `${truncateToEllipsis(item.subject)} - ${item.category_name}` : `${item.category_name}`}</td>
-                                                                    <td style={{fontSize:"13px"}}>{moment(item.requested_date).format('DD-MM-YYYY HH:mm')}</td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                           
-                                                        }
-                                                    </tbody>
-                                            </table>}
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
