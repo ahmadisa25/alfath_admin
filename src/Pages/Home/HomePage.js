@@ -1,38 +1,14 @@
 
 import React, { useEffect, useState } from 'react'
 import DashboardCard from '../../Components/DashboardCard';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    ArcElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-  } from 'chart.js';
 import { group, course, submit } from '../../Images';
-  
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    ArcElement,
-    Tooltip,
-    Legend
-);
+import { getDashboardData } from '../../Service/DashboardService';
+import Swal from 'sweetalert2';
 
 const { $ } = window;
 function HomePage() {
     const [selected_category, setSelectedCategory] = useState({});
     const [selected_type, setSelectedType] = useState("");
-
-    const [top_cards_state, setTopCardsState] = useState({
-        pending: 0,
-        new: 0,
-        unresolved: 0
-    })
 
     /*useEffect(()=>{
         if(userInfo && userInfo.role_name){
@@ -48,6 +24,31 @@ function HomePage() {
             logoutUser(userInfo.role_name);
         }
     },[])*/
+
+    const [dashboard_data, setDashboardData] = useState({
+        total_students:0,
+        total_courses:0,
+        total_submissions:0
+    });
+
+    useEffect(() => {
+        getDashboardData().then(res => {
+            if(res.data.Status == 200){
+                const dash_data = res.data.Data;
+                setDashboardData({
+                    total_students:dash_data.TotalStudents,
+                    total_courses:dash_data.TotalCourses,
+                    total_submissions:dash_data.TotalSubmissions
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "Failed to get dashboard data!"
+                 })
+            }
+    })
+    },[])
 
     const onCloseServiceCategory = (e) => {
         e.preventDefault();
@@ -212,7 +213,7 @@ function HomePage() {
                     </div>
             {/*<div className="col-xl-3 col-md-3 mb-3">
                 <div className="card  h-100 py-2">
-                        <DashboardCard card_title="Overdue Tickets" stats={top_cards_state.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
+                        <DashboardCard card_title="Overdue Tickets" stats={dashboard_data.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
                 </div>
             </div>*/}
             </div>
@@ -220,22 +221,22 @@ function HomePage() {
                     
                             <div className="col-xl-12 col-md-12 mb-4">
                                 <div className="card  h-100 py-2">
-                                    <DashboardCard card_title="Total Courses"  stats={top_cards_state.new} explanation_text={"* Number of courses made by our instructors"} icon={course}/>
+                                    <DashboardCard card_title="Total Courses"  stats={dashboard_data.total_courses} explanation_text={"* Number of courses made by our instructors"} icon={course}/>
                                 </div>
                             </div>
                             <div className="col-xl-12 col-md-12 mb-4">
                                 <div className="card  h-100 py-2">
-                                    <DashboardCard card_title="Total Students"  stats={top_cards_state.pending} explanation_text={"* Number of students enrolled in the system"} icon={group} />
+                                    <DashboardCard card_title="Total Students"  stats={dashboard_data.total_students} explanation_text={"* Number of students enrolled in the system"} icon={group} />
                                 </div>
                             </div>
                             <div className="col-xl-12 col-md-12 mb-4">
                                 <div className="card  h-100 py-2">
-                                    <DashboardCard card_title="Quiz Submissions"  stats={top_cards_state.pending} explanation_text={"* Total of times quizzes are answered"} icon={submit} />
+                                    <DashboardCard card_title="Quiz Submissions"  stats={dashboard_data.total_submissions} explanation_text={"* Total of times quizzes are answered"} icon={submit} />
                                 </div>
                             </div>
                     {/*<div className="col-xl-3 col-md-3 mb-3">
                         <div className="card  h-100 py-2">
-                                <DashboardCard card_title="Overdue Tickets" stats={top_cards_state.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
+                                <DashboardCard card_title="Overdue Tickets" stats={dashboard_data.overdue} explanation_text={"* Incidents or requests still needing help from agents"} icon={overdue} icon_width={120}/>
                         </div>
                     </div>*/}
                     </div>
